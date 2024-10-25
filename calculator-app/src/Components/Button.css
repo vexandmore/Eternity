@@ -1,0 +1,23 @@
+.button {
+    border: none;
+    border-radius: 6px;
+    padding: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.buttons{
+    display: flex;
+    flex-direction: row;
+}
+.buttons-arithmetic {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+.buttons-scientific {
+    margin-left: 10px;
+    height: min-content;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}

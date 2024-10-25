@@ -1,0 +1,42 @@
+.calculator {
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    background-color: #e3a480;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+}
+.buttons-arithmetic {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+.buttons-scientific {
+    margin-left: 10px;
+    height: min-content;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.function-input {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .function-input input {
+    width: 70%;
+    padding: 8px;
+    font-size: 1rem;
+  }
+  
+  .function-input button {
+    padding: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
