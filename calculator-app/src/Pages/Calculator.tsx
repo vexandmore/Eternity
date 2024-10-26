@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Display from "../Components/Display";
 import Button from "../Components/Button";
 import History from "../Components/History"; // Import the History component
+import {powerFunction} from "../Scripts/Functions"
 import './Calculator.css';
 
 const Calculator: React.FC = () => {
@@ -16,7 +17,9 @@ const Calculator: React.FC = () => {
         const modifiedInput = input
           .replace(/cos/g, "Math.cos")
           .replace(/sin/g, "Math.sin")
-          .replace(/tan/g, "Math.tan");
+          .replace(/tan/g, "Math.tan")
+          .replace(/(\d+(\.\d+)?|\([\d\s.]+\))\s*\^\s*(\d+(\.\d+)?|\([\d\s.]+\))/g, "(powerFunction($1, $3))");
+         
         const evaluatedResult = eval(modifiedInput); // Be cautious with eval for user-generated code
 
         // Add the equation and result to history
@@ -56,9 +59,10 @@ const Calculator: React.FC = () => {
           <Button label="DEL" onClick={() => handleButtonClick("DEL")} />
         </div>
         <div className="buttons-scientific">
-          {["sin", "cos", "tan"].map((button) => (
-            <Button key={button} label={button} onClick={() => handleButtonClick(button)} />
-          ))}
+          <Button label="sin" onClick={() => handleButtonClick("sin(")} />
+          <Button label="cos" onClick={() => handleButtonClick("cos(")} />
+          <Button label="tan" onClick={() => handleButtonClick("tan(")} />
+          <Button label="x^y" onClick={() => handleButtonClick("^(")} />
         </div>
       </div>
       <History history={history} onSelect={handleSelectFromHistory} /> {/* Render the History component */}
