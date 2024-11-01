@@ -3,6 +3,8 @@ import Display from "../Components/Display";
 import Button from "../Components/Button";
 import History from "../Components/History"; // Import the History component
 import {powerFunction} from "../Scripts/Functions"
+import {evaluate, parse} from 'mathjs';
+import { evaluate_custom } from "../Scripts/Evaluator";
 import './Calculator.css';
 
 const Calculator: React.FC = () => {
@@ -13,14 +15,9 @@ const Calculator: React.FC = () => {
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
-        // Replace custom functions with Math functions before evaluation
-        const modifiedInput = input
-          .replace(/cos/g, "Math.cos")
-          .replace(/sin/g, "Math.sin")
-          .replace(/tan/g, "Math.tan")
-          .replace(/(\d+(\.\d+)?|\([\d\s.]+\))\s*\^\s*(\d+(\.\d+)?|\([\d\s.]+\))/g, "(powerFunction($1, $3))");
-         
-        const evaluatedResult = eval(modifiedInput); // Be cautious with eval for user-generated code
+        // Use mathjs to parse into tree
+        let expression_tree = parse(input);
+        let evaluatedResult = evaluate_custom(expression_tree);
 
         // Add the equation and result to history
         const newHistoryItem = { equation: input, result: evaluatedResult.toString() };
@@ -28,6 +25,7 @@ const Calculator: React.FC = () => {
 
         setResult(evaluatedResult.toString());
       } catch (error) {
+        console.log(error);
         setResult("Error");
       }
     } else if (value === "C") {
@@ -62,7 +60,9 @@ const Calculator: React.FC = () => {
           <Button label="sin" onClick={() => handleButtonClick("sin(")} />
           <Button label="cos" onClick={() => handleButtonClick("cos(")} />
           <Button label="tan" onClick={() => handleButtonClick("tan(")} />
-          <Button label="x^y" onClick={() => handleButtonClick("^(")} />
+          <Button label="acos" onClick={() => handleButtonClick("acos(")} />
+          <Button label="x^y"  onClick={() => handleButtonClick("^(")} />
+          <Button label="SD"   onClick={() => handleButtonClick("SD(")} />
         </div>
       </div>
       <History history={history} onSelect={handleSelectFromHistory} /> {/* Render the History component */}
