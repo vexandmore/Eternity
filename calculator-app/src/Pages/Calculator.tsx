@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import Display from "../Components/Display";
 import Button from "../Components/Button";
 import History from "../Components/History"; // Import the History component
-import {powerFunction} from "../Scripts/Functions"
-import {evaluate, parse} from 'mathjs';
+import {parse} from 'mathjs';
 import { evaluate_custom } from "../Scripts/Evaluator";
 import './Calculator.css';
 

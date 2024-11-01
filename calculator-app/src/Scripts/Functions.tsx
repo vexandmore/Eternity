@@ -22,8 +22,6 @@ export function powerFunction(b: number, x: number): number {
         return output;
     }
 };
-// Attach to global scope
-(window as any).powerFunction = powerFunction;
 
 function lnApprox(b: number): number {
     if (b > 0 && b < 2) {
