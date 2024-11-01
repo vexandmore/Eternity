@@ -25,7 +25,7 @@ const Calculator: React.FC = () => {
         setResult(evaluatedResult.toString());
       } catch (error) {
         console.log(error);
-        setResult("Error");
+        setResult(String(error));
       }
     } else if (value === "C") {
       setInput("");
