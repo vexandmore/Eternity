@@ -54,8 +54,6 @@ const Calculator: React.FC = () => {
           <Button label=")" onClick={() => handleButtonClick(")")} />
           <Button label="C" onClick={() => handleButtonClick("C")} />
           <Button label="DEL" onClick={() => handleButtonClick("DEL")} />
-          <Button label="," onClick={() => handleButtonClick(",")} />
-
         </div>
         <div className="buttons-scientific">
           <Button label="sin" onClick={() => handleButtonClick("sin(")} />

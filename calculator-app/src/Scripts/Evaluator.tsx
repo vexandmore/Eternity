@@ -1,5 +1,5 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
-import { arcCos, powerFunction, SD} from './Functions';
+import { arcCos, powerFunction } from './Functions';
 
 export function evaluate_custom(root: MathNode): number {
     if (root instanceof ConstantNode) {
@@ -27,10 +27,6 @@ export function evaluate_custom(root: MathNode): number {
                 return arcCos(evaluate_custom(root.args[0]));
             // Sin, cos, and tan use built-in since we don't need to have a custom
             // implementation for them (only for our transcendental functions).
-            case 'SD':
-                // Evaluate each argument of SD and pass them as an array to the SD function
-                const values = root.args.map(arg => evaluate_custom(arg));
-                return SD(values);
             case 'sin':
                 return Math.sin(evaluate_custom(root.args[0]));
             case 'cos':
