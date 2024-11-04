@@ -88,3 +88,17 @@ export function arcCos(x: number): number {
         return result;
     }
 }
+
+export function SD(values: number[]){
+    //n = the size of the set
+    let n = values.length;
+    //calculate the sum
+    let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); // Calculate sum of all values
+    //calculate the mean
+    let mean = sum / n;
+    // calculate the variance
+    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n;
+    // calculate standard deviation (square root of the variance)
+    let sd = Math.sqrt(variance);
+    return sd;
+}
