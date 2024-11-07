@@ -1,27 +1,64 @@
 .history {
-    margin-top: 20px;
-    padding: 10px;
+    width: 100%;
+    max-width: 500px; /* Aligns width with the input bar */
+    height: 150px; /* Fixed height for the scrollable area */
+    overflow-y: auto; /* Ensures scrollability */
+    overflow-y: scroll;
+    background-color: #333;
+    color: #fff;
     border-radius: 5px;
-    background-color: #c36969;
-}
-
-.history h3 {
-    margin: 0;
-    font-size: 1.5rem;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    padding: 5px; /* Small padding for inner spacing */
 }
 
 .history ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align items to the bottom */
 }
 
 .history li {
-    padding: 5px;
-    cursor: pointer;
-    background-color: #c17575;
-    transition: background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0; /* Adjust padding for spacing */
+    border-bottom: 1px solid #555;
+    font-family: 'Orbitron', sans-serif;
+    min-height: 30px; /* Ensures consistent line height */
+    box-sizing: border-box;
 }
 
-.history li:hover {
-    background-color: #9e5f5f;
+.history li:last-child {
+    border-bottom: none;
+}
+
+.history-item-left {
+    text-align: left;
+    flex: 1;
+    padding-right: 10px;
+}
+
+.history-item-right {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Custom Scrollbar Styling */
+.history::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 5px;
+}
+
+.history::-webkit-scrollbar-track {
+    background-color: #333;
 }

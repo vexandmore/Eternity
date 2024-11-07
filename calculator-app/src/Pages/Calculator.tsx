@@ -43,30 +43,83 @@ const Calculator: React.FC = () => {
   };
 
   return (
-    <div className="calculator">
+    <div className="calculator-container">
+      <h1 className="calculator-title">ETERNITY</h1>
+
+        <div className="calculator">
+      <History history={history.slice(-5)} onSelect={handleSelectFromHistory} /> {/* Render the last 5 history items */}
       <Display input={input} result={result} />
       <div className="buttons">
-        <div className="buttons-arithmetic">
-          {["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "/", "*", ".", "="].map((button) => (
-            <Button key={button} label={button} onClick={() => handleButtonClick(button)} />
-          ))}
-          <Button label="(" onClick={() => handleButtonClick("(")} />
-          <Button label=")" onClick={() => handleButtonClick(")")} />
-          <Button label="C" onClick={() => handleButtonClick("C")} />
-          <Button label="DEL" onClick={() => handleButtonClick("DEL")} />
-        </div>
-        <div className="buttons-scientific">
-          <Button label="sin" onClick={() => handleButtonClick("sin(")} />
-          <Button label="cos" onClick={() => handleButtonClick("cos(")} />
-          <Button label="tan" onClick={() => handleButtonClick("tan(")} />
-          <Button label="acos" onClick={() => handleButtonClick("acos(")} />
-          <Button label="x^y"  onClick={() => handleButtonClick("^(")} />
-          <Button label="SD"   onClick={() => handleButtonClick("SD(")} />
-        </div>
+        
+        {/* First Row */}
+        <Button label="a^b" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
+        <Button label="x!" className="operator-button" onClick={() => handleButtonClick("x!")}/>
+        <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
+        <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
+        <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
+        <Button label="DEL" className="operator-button" onClick={() => handleButtonClick("DEL")} />
+        <Button label="AC" className="operator-button" onClick={() => handleButtonClick("C")} />
+    
+        {/* Second Row */}
+        <Button label="a²" className="operator-button" onClick={() => handleButtonClick("a^2")}/>
+        <Button label="aᵇ" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
+        <Button label="|a|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
+        <Button label="←" className="operator-button" onClick={() => handleButtonClick("BACK")} />
+        <Button label="→" className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
+        <Button label="%" className="operator-button" onClick={() => handleButtonClick("%")}/>
+        <Button label="ANS" className="operator-button" onClick={() => handleButtonClick("ANS")}/>
+    
+        {/* Third Row */}
+        <Button label="√" className="operator-button" onClick={() => handleButtonClick("sqrt(")} />
+        <Button label="ⁿ√" className="operator-button" onClick={() => handleButtonClick("root(")} />
+        <Button label="π" className="operator-button" onClick={() => handleButtonClick("pi")} />
+        <Button label="(" className="operator-button" onClick={() => handleButtonClick("(")} />
+        <Button label=")" className="operator-button" onClick={() => handleButtonClick(")")} />
+        <Button label="," className="operator-button" onClick={() => handleButtonClick(",")}/>
+        <Button label="÷" className="operator-button" onClick={() => handleButtonClick("/")} />
+    
+        {/* Fourth Row */}
+        <Button label="sin" className="operator-button" onClick={() => handleButtonClick("sin(")} />
+        <Button label="cos" className="operator-button" onClick={() => handleButtonClick("cos(")} />
+        <Button label="tan" className="operator-button" onClick={() => handleButtonClick("tan(")} />
+        <Button label="7" className="number-button" onClick={() => handleButtonClick("7")} />
+        <Button label="8" className="number-button" onClick={() => handleButtonClick("8")} />
+        <Button label="9" className="number-button" onClick={() => handleButtonClick("9")} />
+        <Button label="x" className="operator-button" onClick={() => handleButtonClick("*")} />
+    
+        {/* Fifth Row */}
+        <Button label="log" className="operator-button" onClick={() => handleButtonClick("log(")} />
+        <Button label="ln" className="operator-button" onClick={() => handleButtonClick("ln(")} />
+        <Button label="e^x" className="operator-button" onClick={() => handleButtonClick("e^(")} />
+        <Button label="4" className="number-button" onClick={() => handleButtonClick("4")} />
+        <Button label="5" className="number-button" onClick={() => handleButtonClick("5")} />
+        <Button label="6" className="number-button" onClick={() => handleButtonClick("6")} />
+        <Button label="-" className="operator-button" onClick={() => handleButtonClick("-")} />
+    
+        {/* Sixth Row */}
+        <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
+        <Button label="xʸ" className="transcendental-button" onClick={() => handleButtonClick("x^y(")} />
+        <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
+        <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
+        <Button label="2" className="number-button" onClick={() => handleButtonClick("2")} />
+        <Button label="3" className="number-button" onClick={() => handleButtonClick("3")} />
+        <Button label="+" className="operator-button" onClick={() => handleButtonClick("+")} />
+    
+        {/* Seventh Row */}
+        <Button label="MAD" className="transcendental-button" onClick={() => handleButtonClick("MAD(")} />
+        <Button label="sinh(x)" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
+        <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD(")} />
+        <Button label="0" className="number-button" onClick={() => handleButtonClick("0")} />
+        <Button label="." className="number-button" onClick={() => handleButtonClick(".")} />
+        
+        {/* Equal Button spans two rows */}
+        <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
       </div>
-      <History history={history} onSelect={handleSelectFromHistory} /> {/* Render the History component */}
     </div>
+    </div>
+
   );
 };
+
 
 export default Calculator;

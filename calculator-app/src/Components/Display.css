@@ -1,10 +1,21 @@
 .display {
-    text-align: right;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-    background: #444444;
-    color: #fff;
+    display: flex;
+    justify-content: space-between; /* Aligns input and result */
     padding: 10px;
-    border-radius: 4px;
-    min-height: 42px;
-}
+    font-size: 1.5rem;
+    background-color: #3a3a3a;
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .display-input {
+    text-align: left; /* Align input to the left */
+    font-weight: bold;
+  }
+  
+  .display-result {
+    text-align: right; /* Align result to the right */
+    color: #4CAFFF;
+  }
+  

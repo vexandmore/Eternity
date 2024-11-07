@@ -1,42 +1,133 @@
-.calculator {
-    padding: 20px;
-    border-radius: 8px;
-    display: inline-block;
-    background-color: #e3a480;
+
+.calculator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #d3d3d3;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: auto;
 }
 
-.buttons{
-    display: flex;
-    flex-direction: row;
-}
-.buttons-arithmetic {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-}
-.buttons-scientific {
-    margin-left: 10px;
-    height: min-content;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
+
+.calculator-title {
+  font-family: 'Orbitron', sans-serif; /* Technology-inspired font */
+  font-size: 3rem; /* Slightly larger for impact */
+  color: #4CAFFF; /* Cool blue color for futuristic feel */
+  margin-bottom: 10px;
+  margin-top: 0px;
+
+  text-align: center;
+  letter-spacing: 0.1em; /* Adds space between letters for a sleek look */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Creates a glowing effect */
+  text-transform: uppercase; /* Ensures title is in all caps */
 }
 
-.function-input {
-    margin-top: 10px;
-    display: flex;
-    gap: 8px;
-  }
-  
-  .function-input input {
-    width: 70%;
-    padding: 8px;
-    font-size: 1rem;
-  }
-  
-  .function-input button {
-    padding: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
+
+.history {
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  overflow-y: auto;
+  height: 125px; /* Set height for 5 lines */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.history ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column-reverse; /* Reverse to start filling from bottom */
+}
+
+.history li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-family: 'Orbitron', sans-serif;
+  border-bottom: 1px solid #555;
+}
+
+.history li:empty {
+  visibility: hidden; /* Hide empty placeholders */
+}
+
+
+.history-item-left {
+  text-align: left;
+}
+
+.history-item-right {
+  text-align: right;
+} 
+
+
+.display-container {
+  width: 100%;
+  background-color: #1c1c1c;
+  color: white;
+  font-size: 1.5rem;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* Creates 7 equal columns */
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* General button style */
+button {
+  padding: 15px;
+  min-width: 50px;
+  min-height: 50px;
+  font-size: 1.1em; /* Ensures consistent font size across buttons */
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Specific Button Types */
+.number-button {
+  background-color: #4A90E2; /* Blue for numbers */
+  color: white;
+}
+
+.operator-button {
+  background-color: #6D6D6D; /* Dark grey for operators and arrows */
+  color: white;
+}
+
+.transcendental-button {
+  background-color: #404040; /* Darker grey for transcendental functions */
+  color: white;
+}
+
+/* Override for Equal Button */
+.equal-button {
+  max-height: 50px;
+  background-color: #4CAFFF !important; /* Light blue for equal sign */
+  color: white !important;
+  font-size: 1.2em !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+ grid-column: span 2 / span 2;
+}
+
+
