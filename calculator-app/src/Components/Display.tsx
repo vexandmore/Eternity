@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState} from "react";
+import warning from "./warning.png";
 import "./Display.css";
 
 interface DisplayProps {
@@ -12,7 +13,7 @@ const Display: React.FC<DisplayProps> = ({ input, result, error }) => {
     return (
       <div className="display">
         <span className="display-input">{input}</span>
-        <span className="display-error">{error}</span>
+        <span className="display-error" title={error}><img src={warning} width="22px" height="22px"></img></span>
       </div>
     ); 
   } else {
