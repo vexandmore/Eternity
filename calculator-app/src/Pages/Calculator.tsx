@@ -47,8 +47,8 @@ const Calculator: React.FC = () => {
       <h1 className="calculator-title">ETERNITY</h1>
 
         <div className="calculator">
-      <History history={history.slice(-5)} onSelect={handleSelectFromHistory} /> {/* Render the last 5 history items */}
-      <Display input={input} result={result} />
+        <History history={history} onSelect={handleSelectFromHistory} />
+        <Display input={input} result={result} />
       <div className="buttons">
         
         {/* First Row */}

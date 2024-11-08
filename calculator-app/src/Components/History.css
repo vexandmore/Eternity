@@ -1,64 +1,62 @@
 .history {
-    width: 100%;
-    max-width: 500px; /* Aligns width with the input bar */
-    height: 150px; /* Fixed height for the scrollable area */
-    overflow-y: auto; /* Ensures scrollability */
-    overflow-y: scroll;
-    background-color: #333;
-    color: #fff;
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 1.2rem;
+    background-color: #3a3a3a;
+    color: white;
     border-radius: 5px;
     margin-bottom: 10px;
+    width: 100%;
+    max-width: 500px;
+    overflow-y: auto;
+    height: 150px; /* Exactly 5 lines, 30px each */
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.4);
     box-sizing: border-box;
-    padding: 5px; /* Small padding for inner spacing */
-}
-
-.history ul {
+    padding: 0; /* Remove internal padding */
+  }
+  
+  .history ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    font-size: 1rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; /* Align items to the bottom */
-}
-
-.history li {
+  }
+  
+  .history li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0; /* Adjust padding for spacing */
-    border-bottom: 1px solid #555;
     font-family: 'Orbitron', sans-serif;
-    min-height: 30px; /* Ensures consistent line height */
-    box-sizing: border-box;
-}
-
-.history li:last-child {
-    border-bottom: none;
-}
-
-.history-item-left {
+    height: 30px; /* Fixed height for each line */
+    border-bottom: 1px solid rgba(85, 85, 85, 0.5);
+  }
+  
+  .history li:last-child {
+    border-bottom: none; /* Remove bottom border for the last item */
+  }
+  
+  .history-item-left {
     text-align: left;
     flex: 1;
-    padding-right: 10px;
-}
-
-.history-item-right {
+    padding-left: 5px;
+  }
+  
+  .history-item-right {
     text-align: right;
     white-space: nowrap;
-}
-
-/* Custom Scrollbar Styling */
-.history::-webkit-scrollbar {
+    padding-right: 5px;
+  }
+  
+  /* Scrollbar customization */
+  .history::-webkit-scrollbar {
     width: 8px;
-}
-
-.history::-webkit-scrollbar-thumb {
+  }
+  
+  .history::-webkit-scrollbar-thumb {
     background-color: #555;
     border-radius: 5px;
-}
-
-.history::-webkit-scrollbar-track {
+  }
+  
+  .history::-webkit-scrollbar-track {
     background-color: #333;
-}
+  }
+  
