@@ -1,5 +1,5 @@
 import React from "react";
-import './Display.css'
+import "./Display.css";
 
 interface DisplayProps {
   input: string;
@@ -9,8 +9,8 @@ interface DisplayProps {
 const Display: React.FC<DisplayProps> = ({ input, result }) => {
   return (
     <div className="display">
-      <div className="input">{input}</div>
-      <div className="result">{result}</div>
+      <span className="display-input">{input}</span>
+      <span className="display-result">= {result}</span>
     </div>
   );
 };

@@ -1,27 +1,56 @@
 .history {
-    margin-top: 20px;
-    padding: 10px;
+    width: 100%;
+    max-width: 900px; /* Matches calculator width */
+    background-color: #333;
+    color: #fff;
     border-radius: 5px;
-    background-color: #c36969;
-}
-
-.history h3 {
-    margin: 0;
-    font-size: 1.5rem;
+    overflow-y: auto;
+    height: 120px; /* Ensures it displays 5 entries without overlap */
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box; /* Ensures padding doesn’t affect overall width */
 }
 
 .history ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .history li {
-    padding: 5px;
-    cursor: pointer;
-    background-color: #c17575;
-    transition: background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px; /* Consistent height for each entry */
+    font-family: 'Orbitron', sans-serif;
+    border-bottom: 1px solid rgba(85, 85, 85, 0.5);
 }
 
-.history li:hover {
-    background-color: #9e5f5f;
+.history li:last-child {
+    border-bottom: none;
+}
+
+.history-item-left {
+    text-align: left;
+    flex: 1;
+    padding-left: 5px;
+}
+
+.history-item-right {
+    text-align: right;
+    white-space: nowrap;
+    padding-right: 5px;
+}
+
+/* Scrollbar customization */
+.history::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 5px;
+}
+
+.history::-webkit-scrollbar-track {
+    background-color: #333;
 }
