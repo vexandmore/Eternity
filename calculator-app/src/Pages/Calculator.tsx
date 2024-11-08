@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Display from "../Components/Display";
 import Button from "../Components/Button";
+import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History"; // Import the History component
 import {parse} from 'mathjs';
 import { evaluate_custom } from "../Scripts/Evaluator";
@@ -47,10 +48,14 @@ const Calculator: React.FC = () => {
       <h1 className="calculator-title">ETERNITY</h1>
 
         <div className="calculator">
-        <History history={history} onSelect={handleSelectFromHistory} />
-        <Display input={input} result={result} />
-      <div className="buttons">
-        
+        <div className="history-display-wrapper">
+  <History history={history} onSelect={handleSelectFromHistory} />
+  <Display input={input} result={result} />
+</div>
+        <div className="main-content">
+
+        <div className="buttons">
+      
         {/* First Row */}
         <Button label="a^b" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
         <Button label="x!" className="operator-button" onClick={() => handleButtonClick("x!")}/>
@@ -114,6 +119,8 @@ const Calculator: React.FC = () => {
         
         {/* Equal Button spans two rows */}
         <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
+      </div>
+      <ContentScreen hasContent={false} /> 
       </div>
     </div>
     </div>

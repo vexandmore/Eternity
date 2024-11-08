@@ -1,3 +1,4 @@
+/* Main calculator container */
 .calculator-container {
   display: flex;
   flex-direction: column;
@@ -5,11 +6,70 @@
   padding: 20px;
   background-color: #d3d3d3;
   border-radius: 10px;
-  max-width: 500px;
+  max-width: 900px;
   margin: auto;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Shadow for main container */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
+/* Wrapper for history and display */
+.history-display-wrapper {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Display container */
+.display-container {
+  width: 100%;
+  background-color: #1c1c1c;
+  color: white;
+  font-size: 1.5rem;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  margin-bottom: 12px;
+}
+
+/* Main content area with buttons and content screen */
+.main-content {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+}
+
+/* Button container */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 380px;
+  height: 380px; /* Explicitly set the height to match the content screen */
+}
+
+/* Content screen styling */
+.content-screen {
+  flex: 1;
+  padding: 10px;
+  background-color: #1c1c1c;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  min-height: 380px;
+  height: 380px; /* Ensure this matches the button container height */
+}
+
+/* Calculator title styling */
 .calculator-title {
   font-family: 'Orbitron', sans-serif;
   font-size: 3rem;
@@ -22,28 +82,7 @@
   text-transform: uppercase;
 }
 
-
-.display-container {
-  width: 100%;
-  background-color: #1c1c1c;
-  color: white;
-  font-size: 1.5rem;
-  padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); /* Shadow for display area */
-}
-
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr); /* Creates 7 equal columns */
-  gap: 8px;
-  margin-top: 10px;
-}
-
+/* Button styles */
 button {
   padding: 15px;
   min-width: 50px;
@@ -53,7 +92,7 @@ button {
   border: none;
   cursor: pointer;
   text-align: center;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Shadow for button depth */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
