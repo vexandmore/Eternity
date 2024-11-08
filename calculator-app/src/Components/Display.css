@@ -18,4 +18,8 @@
     text-align: right; /* Align result to the right */
     color: #4CAFFF;
   }
-  
+ 
+  .display-error {
+    text-align: right;
+    color: firebrick;
+  }

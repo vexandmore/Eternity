@@ -4,12 +4,15 @@ import Button from "../Components/Button";
 import History from "../Components/History"; // Import the History component
 import {parse} from 'mathjs';
 import { evaluate_custom } from "../Scripts/Evaluator";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 import './Calculator.css';
+import { error } from "console";
 
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
+  const [parseError, setParseError] = useState<string>("");
 
   const handleButtonClick = (value: string) => {
     if (value === "=") {
@@ -30,11 +33,25 @@ const Calculator: React.FC = () => {
     } else if (value === "C") {
       setInput("");
       setResult("");
+      setParseError("");
     } else if (value === "DEL") {
       // Delete the last character from input
       setInput(input.slice(0, -1));
     } else {
-      setInput(input + value);
+      let new_input = input + value;
+      
+      try {
+        let expression_tree = parse(new_input);
+        setParseError("");
+      } catch(e) {
+        if (e instanceof SyntaxError) {
+          setParseError(makeMessage(new_input, e));
+        } else {
+          setParseError(String(e));
+        }
+      }
+
+      setInput(new_input);
     }
   };
 
@@ -48,7 +65,7 @@ const Calculator: React.FC = () => {
 
         <div className="calculator">
       <History history={history.slice(-5)} onSelect={handleSelectFromHistory} /> {/* Render the last 5 history items */}
-      <Display input={input} result={result} />
+      <Display input={input} result={result} error={parseError} />
       <div className="buttons">
         
         {/* First Row */}
@@ -97,7 +114,7 @@ const Calculator: React.FC = () => {
         <Button label="-" className="operator-button" onClick={() => handleButtonClick("-")} />
     
         {/* Sixth Row */}
-        <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
+        <Button label="arccos" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
         <Button label="xʸ" className="transcendental-button" onClick={() => handleButtonClick("x^y(")} />
         <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
@@ -107,7 +124,7 @@ const Calculator: React.FC = () => {
     
         {/* Seventh Row */}
         <Button label="MAD" className="transcendental-button" onClick={() => handleButtonClick("MAD(")} />
-        <Button label="sinh(x)" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
+        <Button label="sinh" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
         <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD(")} />
         <Button label="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." className="number-button" onClick={() => handleButtonClick(".")} />
