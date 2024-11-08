@@ -10,6 +10,7 @@ yarn-error.log*
 .clj-kondo/
 .idea/
 .lsp/
+.DS_Store
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
