@@ -1,5 +1,6 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
-import { arcCos, powerFunction } from './Functions';
+import { arcCos, powerFunction, sin } from './Functions';
+
 
 export function evaluate_custom(root: MathNode): number {
     if (root instanceof ConstantNode) {
@@ -28,11 +29,11 @@ export function evaluate_custom(root: MathNode): number {
             // Sin, cos, and tan use built-in since we don't need to have a custom
             // implementation for them (only for our transcendental functions).
             case 'sin':
-                return Math.sin(evaluate_custom(root.args[0]));
+                return sin(evaluate_custom(root.args[0]));
             case 'cos':
                 return Math.cos(evaluate_custom(root.args[0]));
             case 'tan':
-                return Math.tan(evaluate_custom(root.args[0]));
+                return Math.tan(evaluate_custom(root.args[0]));    
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }

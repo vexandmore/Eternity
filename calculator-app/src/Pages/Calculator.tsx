@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import Display from "../Components/Display";
 import Button from "../Components/Button";
 import History from "../Components/History"; // Import the History component
-import {parse} from 'mathjs';
+import { parse } from 'mathjs';
 import { evaluate_custom } from "../Scripts/Evaluator";
 import './Calculator.css';
+import Papa from 'papaparse';
 
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
+  const [csvData, setCsvData] = useState<any[]>([]); // State to store CSV data
 
   const handleButtonClick = (value: string) => {
     if (value === "=") {
@@ -42,6 +44,19 @@ const Calculator: React.FC = () => {
     setInput(input + equation); // Populate input with the selected equation
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      Papa.parse(file, {
+        complete: (result) => {
+          setCsvData(result.data);
+          console.log(result.data); // Log or process the CSV data
+        },
+        header: true
+      });
+    }
+  };
+
   return (
     <div className="calculator">
       <Display input={input} result={result} />
@@ -62,9 +77,41 @@ const Calculator: React.FC = () => {
           <Button label="acos" onClick={() => handleButtonClick("acos(")} />
           <Button label="x^y"  onClick={() => handleButtonClick("^(")} />
           <Button label="SD"   onClick={() => handleButtonClick("SD(")} />
+          <input 
+            type="file" 
+            accept=".csv" 
+            style={{ display: "none" }} 
+            id="file-upload" 
+            onChange={handleFileUpload} 
+          />
+          <Button label="Import CSV" onClick={() => document.getElementById('file-upload')?.click()} />
         </div>
       </div>
       <History history={history} onSelect={handleSelectFromHistory} /> {/* Render the History component */}
+      
+      {/* Display CSV Data */}
+      <div className="csv-data">
+        {csvData.length > 0 && (
+          <table>
+            <thead>
+              <tr>
+                {Object.keys(csvData[0]).map((key) => (
+                  <th key={key}>{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {csvData.map((row, index) => (
+                <tr key={index}>
+                  {Object.values(row).map((value, i) => (
+                    <td key={i}>{String(value)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 };
