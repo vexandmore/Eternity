@@ -1,32 +1,36 @@
 .history {
     width: 100%;
-    max-width: 900px; /* Matches calculator width */
+    max-width: 900px;
     background-color: #333;
     color: #fff;
     border-radius: 5px;
     overflow-y: auto;
-    height: 120px; /* Ensures it displays 5 entries without overlap */
+    height: 120px;
     box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.4);
-    box-sizing: border-box; /* Ensures padding doesn’t affect overall width */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .history ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .history li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 24px; /* Consistent height for each entry */
+    height: 24px;
     font-family: 'Orbitron', sans-serif;
     border-bottom: 1px solid rgba(85, 85, 85, 0.5);
 }
 
-.history li:last-child {
-    border-bottom: none;
+.history li.placeholder {
+    visibility: visible; /* Ensures placeholders are always visible */
 }
 
 .history-item-left {
