@@ -1,23 +1,47 @@
+/* Button.css */
+
 .button {
+    padding: 15px;
+    min-width: 50px;
+    min-height: 50px;
+    font-size: 1.1em;
+    border-radius: 5px;
     border: none;
-    border-radius: 6px;
-    padding: 20px;
-    font-size: 1.2rem;
     cursor: pointer;
-}
-.buttons{
+    text-align: center;
+  }
+  
+  /* Different Button Types */
+  .number-button {
+    background-color: #4A90E2;
+    color: white;
+  }
+  
+  .equal-button {
+    background-color: #4CAFFF;
+    color: white;
+    grid-row: span 2; /* Ensures it spans two rows */
     display: flex;
-    flex-direction: row;
-}
-.buttons-arithmetic {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-}
-.buttons-scientific {
-    margin-left: 10px;
-    height: min-content;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-}
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .operator-button {
+    background-color: #6D6D6D;
+    color: white;
+  }
+  
+  .transcendental-button {
+    background-color: #404040;
+    color: white;
+  }
+  
+  /* Hover and Active States */
+  button:hover {
+    filter: brightness(1.1);
+  }
+  
+  button:active {
+    filter: brightness(0.9);
+  }
+  

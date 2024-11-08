@@ -1,5 +1,5 @@
 import React from "react";
-import "./History.css"
+import "./History.css";
 
 interface HistoryItem {
   equation: string;
@@ -13,22 +13,16 @@ interface HistoryProps {
 
 const History: React.FC<HistoryProps> = ({ history, onSelect }) => {
   return (
-    <span>
-    {history.length === 0 ? (
-        <span></span>
-        ) : (
-        <div className="history">
-            <h3>History</h3>
-            <ul>
-                {history.map((item, index) => (
-                <li key={index} onClick={() => onSelect(item.result)} className="history-item">
-                    {item.equation} = {item.result}
-                </li>
-                ))}
-            </ul>
-        </div>
-    )}
-    </span>
+    <div className="history">
+      <ul>
+        {history.map((item, index) => (
+          <li key={index} onClick={() => item.equation && onSelect(item.equation)}>
+            <span className="history-item-left">{item.equation}</span>
+            <span className="history-item-right">{item.result && `= ${item.result}`}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
