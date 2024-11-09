@@ -10,8 +10,12 @@ import './Calculator.css';
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
-  const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
 
+    // Initialize history with five empty lines
+    const [history, setHistory] = useState<{ equation: string; result: string }[]>(
+      Array(5).fill({ equation: "", result: "" })
+    );
+  
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {

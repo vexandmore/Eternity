@@ -1,5 +1,6 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
 import { arcCos, powerFunction, SD} from './Functions';
+import { arcCos, powerFunction, SD} from './Functions';
 
 export function evaluate_custom(root: MathNode): number {
     if (root instanceof ConstantNode) {
