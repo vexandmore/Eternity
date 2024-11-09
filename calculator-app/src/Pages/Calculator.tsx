@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Display from "../Components/Display";
 import Button from "../Components/Button";
 import ContentScreen from "../Components/ContentScreen";
-import History from "../Components/History"; // Import the History component
-import {parse} from 'mathjs';
+import History from "../Components/History";
+import { parse } from "mathjs";
 import { evaluate_custom } from "../Scripts/Evaluator";
-import './Calculator.css';
+import "./Calculator.css";
+import Papa from "papaparse";
+
+interface DataSeries {
+  name: string;
+  data: any[];
+}
 
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
+  const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
+  const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    // Initialize history with five empty lines
-    const [history, setHistory] = useState<{ equation: string; result: string }[]>(
-      Array(5).fill({ equation: "", result: "" })
-    );
+    // // Initialize history with five empty lines
+    // const [history, setHistory] = useState<{ equation: string; result: string }[]>(
+    //   Array(5).fill({ equation: "", result: "" })
+    // );
   
   const handleButtonClick = (value: string) => {
     if (value === "=") {
@@ -47,10 +57,30 @@ const Calculator: React.FC = () => {
     setInput(input + equation); // Populate input with the selected equation
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const csvData = e.target?.result as string;
+        const parsedData = Papa.parse(csvData, { header: true }).data;
+        setSeriesList([...seriesList, { name: `Series ${seriesList.length + 1}`, data: parsedData }]);
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleAddSeriesClick = () => {
+    fileInputRef.current?.click(); // Trigger the file input click
+  };
+
+  const handleSelectSeries = (index: number) => {
+    setSelectedSeriesIndex(index);
+  };
+
   return (
     <div className="calculator-container">
       <h1 className="calculator-title">ETERNITY</h1>
-
         <div className="calculator">
         <div className="history-display-wrapper">
   <History history={history} onSelect={handleSelectFromHistory} />
@@ -124,8 +154,20 @@ const Calculator: React.FC = () => {
         {/* Equal Button spans two rows */}
         <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
       </div>
-      <ContentScreen hasContent={false} /> 
-      </div>
+      <ContentScreen
+            seriesList={seriesList}
+            selectedSeriesIndex={selectedSeriesIndex}
+            onSelectSeries={handleSelectSeries}
+            onAddSeries={handleAddSeriesClick} // Pass the click handler
+          />
+          {/* Place the hidden file input here */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFileUpload}
+          />
+                </div>
     </div>
     </div>
 
