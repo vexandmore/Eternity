@@ -20,23 +20,18 @@ const Calculator: React.FC = () => {
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
-    // // Initialize history with five empty lines
-    // const [history, setHistory] = useState<{ equation: string; result: string }[]>(
-    //   Array(5).fill({ equation: "", result: "" })
-    // );
   
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
-        // Use mathjs to parse into tree
         let expression_tree = parse(input);
         let evaluatedResult = evaluate_custom(expression_tree);
-
-        // Add the equation and result to history
+  
         const newHistoryItem = { equation: input, result: evaluatedResult.toString() };
         setHistory([...history, newHistoryItem]);
-
+  
         setResult(evaluatedResult.toString());
       } catch (error) {
         console.log(error);
@@ -46,13 +41,41 @@ const Calculator: React.FC = () => {
       setInput("");
       setResult("");
     } else if (value === "DEL") {
-      // Delete the last character from input
-      setInput(input.slice(0, -1));
+      // Handle delete within "SD()"
+      if (input.includes("SD(") && input.endsWith(")")) {
+        const start = input.indexOf("SD(") + 3; // Start index of the content within "SD("
+        const end = input.lastIndexOf(")");     // End index of the content within "SD("
+        const insideContent = input.slice(start, end);
+        
+        // If there's content inside "SD()", remove the last character of the content
+        if (insideContent) {
+          setInput(input.slice(0, start) + insideContent.slice(0, -1) + input.slice(end));
+        }
+      } else {
+        // Regular delete if not inside "SD()"
+        setInput(input.slice(0, -1));
+      }
+    } else if (value === "σ") {
+      // Check if "SD()" is already in the input to avoid duplicates
+      if (input.includes("SD()")) return;
+      setInput(input + "SD()"); // Add "SD()" with empty parentheses
     } else {
-      setInput(input + value);
+      // Check if input ends with "SD()" and insert the value inside the parentheses
+      if (input.endsWith("SD()")) {
+        // Insert value inside the parentheses, keeping commas within
+        const updatedInput = input.slice(0, -1) + value + ")";
+        setInput(updatedInput);
+      } else if (input.includes("SD(") && input.endsWith(")")) {
+        // Ensure commas are added correctly inside SD function
+        const end = input.lastIndexOf(")");     // End index of the content within "SD("
+        const updatedInput = input.slice(0, end) + value + input.slice(end);
+        setInput(updatedInput);
+      } else {
+        setInput(input + value);
+      }
     }
   };
-
+ 
   const handleSelectFromHistory = (equation: string) => {
     setInput(input + equation); // Populate input with the selected equation
   };
@@ -60,36 +83,74 @@ const Calculator: React.FC = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension from the name
       const reader = new FileReader();
+  
       reader.onload = (e) => {
         const csvData = e.target?.result as string;
-        const parsedData = Papa.parse(csvData, { header: true }).data;
-        setSeriesList([...seriesList, { name: `Series ${seriesList.length + 1}`, data: parsedData }]);
+        const parsedData = Papa.parse<{ [key: string]: any }>(csvData, { header: false, skipEmptyLines: true }).data;
+  
+        const convertedData = parsedData.map(row => {
+          const convertedRow: { [key: string]: any } = {};
+          for (let key in row) {
+            const value = row[key];
+            convertedRow[key] = isNaN(Number(value)) ? value : Number(value);
+          }
+          return convertedRow;
+        });
+  
+        // Use the file name as the series name
+        setSeriesList([...seriesList, { name: fileName, data: convertedData }]);
       };
       reader.readAsText(file);
     }
   };
+  
 
   const handleAddSeriesClick = () => {
-    fileInputRef.current?.click(); // Trigger the file input click
+    fileInputRef.current?.click();
   };
 
   const handleSelectSeries = (index: number) => {
     setSelectedSeriesIndex(index);
   };
 
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, data: number[]) => {
+    event.dataTransfer.setData("text/plain", JSON.stringify(data));
+  };
+
+ 
+  const handleDropOnInput = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const seriesDataString = event.dataTransfer.getData("text/plain");
+    if (seriesDataString) {
+      try {
+        const seriesData = JSON.parse(seriesDataString);
+        if (input.endsWith("SD()")) {
+          // Insert series data inside the "SD()" brackets
+          const updatedInput = input.slice(0, -1) + seriesData.join(", ") + ")";
+          setInput(updatedInput);
+        } else {
+          setInput((prevInput) => prevInput + seriesData.join(", "));
+        }
+      } catch (error) {
+        console.error("Error parsing dropped data:", error);
+      }
+    }
+  };
+  
+  
   return (
     <div className="calculator-container">
       <h1 className="calculator-title">ETERNITY</h1>
-        <div className="calculator">
-        <div className="history-display-wrapper">
-  <History history={history} onSelect={handleSelectFromHistory} />
-  <Display input={input} result={result} />
-</div>
-        <div className="main-content">
-
+      <div className="calculator" onDrop={handleDropOnInput} onDragOver={(e) => e.preventDefault()} > 
+      <div className="history-display-wrapper">
+      <History history={history} onSelect={handleSelectFromHistory} />
+      <Display input={input} result={result} />
+    </div>
+     <div className="main-content">
         <div className="buttons">
-      
+          
         {/* First Row */}
         <Button label="a^b" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
         <Button label="x!" className="operator-button" onClick={() => handleButtonClick("x!")}/>
@@ -147,7 +208,7 @@ const Calculator: React.FC = () => {
         {/* Seventh Row */}
         <Button label="MAD" className="transcendental-button" onClick={() => handleButtonClick("MAD(")} />
         <Button label="sinh(x)" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
-        <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD(")} />
+        <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD()")} />
         <Button label="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." className="number-button" onClick={() => handleButtonClick(".")} />
         
@@ -158,16 +219,12 @@ const Calculator: React.FC = () => {
             seriesList={seriesList}
             selectedSeriesIndex={selectedSeriesIndex}
             onSelectSeries={handleSelectSeries}
-            onAddSeries={handleAddSeriesClick} // Pass the click handler
+            onAddSeries={handleAddSeriesClick}
+            onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
           />
-          {/* Place the hidden file input here */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={handleFileUpload}
-          />
-                </div>
+          <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
+        
+      </div>
     </div>
     </div>
 

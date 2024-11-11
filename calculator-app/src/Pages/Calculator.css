@@ -197,3 +197,22 @@ button:active {
   border-radius: 4px; /* Slight rounding, but keeps it mostly square */
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for emphasis */
 }
+
+/* Histogram Button Styling */
+.histogram-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  height: 25px; /* Set height to make it smaller but square */
+  width: 25px; /* Same as height to keep it square */
+  cursor: pointer;
+  color: white;
+  background-color: #6D6D6D;
+}
+.histogram-button:hover {
+  background-color: #939292;
+
+}
