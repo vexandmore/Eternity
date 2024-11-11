@@ -12,66 +12,6 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Wrapper for history and display */
-.history-display-wrapper {
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Display container */
-.display-container {
-  width: 100%;
-  background-color: #1c1c1c;
-  color: white;
-  font-size: 1.5rem;
-  padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
-  margin-bottom: 12px;
-}
-
-/* Main content area with buttons and content screen */
-.main-content {
-  display: flex;
-  width: 100%;
-  gap: 12px;
-  align-items: stretch;
-}
-
-/* Button container */
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  flex: 1;
-  min-height: 380px;
-  height: 380px;
-}
-
-/* Content screen styling */
-.content-screen {
-  flex: 1;
-  padding: 10px;
-  background-color: #1c1c1c;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-  min-height: 380px;
-  height: 380px;
-  width: 100%;
-}
-
 /* Calculator title styling */
 .calculator-title {
   font-family: 'Orbitron', sans-serif;
@@ -84,6 +24,35 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
   text-transform: uppercase;
 }
+
+/* Main content area with buttons and content screen */
+.main-content {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* Wrapper for history and display */
+.history-display-wrapper {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* Button container */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 380px;
+  height: 380px;
+}
+
 
 /* Button styles */
 button {
@@ -130,43 +99,65 @@ button:active {
   grid-column: span 2 / span 2;
 }
 
-/* Content screen structure */
+/* Content screen styling */
 .content-screen {
-  position: relative;
-  height: 100%;
+  flex: 1;
+  padding: 10px;
+  background-color: #333;
+  color: rgb(0, 0, 0);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  min-height: 380px;
+  height: 380px;
+  width: 100%;
+  max-width: 398px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Data display area */
 .data-display {
   flex-grow: 1;
-  background-color: #1a1a1a;
+  background-color: #f5fbff;
   padding: 10px;
-  overflow: auto;
+  overflow-y: auto;
   width: 100%;
+  max-height: 320px;
+  box-sizing: border-box;
+  border-radius: 4px;
 }
 
-/* Container for the tab bar at the bottom */
+/* Tab container with fixed width */
 .tab-container {
   display: flex;
   align-items: center;
-  background-color: #f9f9f9;
+  background-color: #f5fbff;
   height: 50px;
-  width: 100%;
-  overflow: hidden;
-  border-top: 1px solid #ccc;
-  padding: 0 10px;
+  width: 398px;
+  padding-left: 4px;
   box-sizing: border-box;
+  position: relative;
+  border-radius: 4px;
+
 }
 
-/* Scrollable area for tabs */
+/* Scrollable tabs area */
 .tabs-scrollable {
   display: flex;
-  overflow-x: auto;
+  overflow-x: auto; /* Enables horizontal scrolling */
   white-space: nowrap;
-  flex-grow: 1;
-  padding-right: 10px;
+  flex-grow: 1; /* Takes up remaining space */
   scrollbar-width: thin;
+  padding-right: 10px;
+}
+
+.tabs-scrollable::-webkit-scrollbar {
+  display: none; /* Hides scrollbar in WebKit-based browsers */
 }
 
 /* Each tab styling */
@@ -177,26 +168,32 @@ button:active {
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
-  flex-shrink: 0;
-  width: 80px;
+  flex-shrink: 0; /* Prevents tabs from shrinking */
+  width: 79px;
+  height: 28px;
   text-align: center;
 }
 
+/* Active tab style */
 .tab.active {
-  background-color: #cccccc;
+  background-color: #ababab;
   font-weight: bold;
 }
 
+
 /* Plus button styling */
 .add-button {
-  background-color: #007bff;
+  background-color: #4A90E2;
   color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px;
   cursor: pointer;
-  min-width: 40px;
   text-align: center;
-  height: 100%;
   flex-shrink: 0;
+  height: 25px; /* Set height to make it smaller but square */
+  width: 25px; /* Same as height to keep it square */
+  font-size: 1,1rem; /* Adjust font size for visibility */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px; /* Slight rounding, but keeps it mostly square */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for emphasis */
 }

@@ -23,7 +23,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
       {/* Display Area for Selected Series Data */}
       <div className="data-display">
         {selectedSeriesIndex !== null && (
-          <table className="excel-table">
+          <table className="data-table">
             <thead>
               <tr>
                 {Object.keys(seriesList[selectedSeriesIndex].data[0] || {}).map((header, index) => (
