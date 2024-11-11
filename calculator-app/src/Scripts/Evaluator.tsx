@@ -1,5 +1,5 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
-import { arcCos, powerFunction, sin, SD } from './Functions';
+import { factorial, arcCos, powerFunction, sin, SD, sqrt, abs } from './Functions';
 
 
 export function evaluate_custom(root: MathNode): number {
@@ -19,6 +19,12 @@ export function evaluate_custom(root: MathNode): number {
                 return evaluate_custom(root.args[0]) / evaluate_custom(root.args[1]);
             case 'pow':
                 return powerFunction(evaluate_custom(root.args[0]), evaluate_custom(root.args[1]));
+            case 'factorial':
+                return factorial(evaluate_custom(root.args[0]));
+            case 'unaryMinus':
+                return -1 * evaluate_custom(root.args[0]);
+            case 'unaryPlus':
+                return evaluate_custom(root.args[0]);
             default:
                 throw Error(`Don't recognize ${root.fn} operator`);
         }
@@ -26,8 +32,6 @@ export function evaluate_custom(root: MathNode): number {
         switch (root.fn.name) {
             case 'acos':
                 return arcCos(evaluate_custom(root.args[0]));
-            // Sin, cos, and tan use built-in since we don't need to have a custom
-            // implementation for them (only for our transcendental functions).
             case 'SD':
             // Evaluate each argument of SD and pass them as an array to the SD function
              const values = root.args.map(arg => evaluate_custom(arg));
@@ -37,7 +41,11 @@ export function evaluate_custom(root: MathNode): number {
             case 'cos':
                 return Math.cos(evaluate_custom(root.args[0]));
             case 'tan':
-                return Math.tan(evaluate_custom(root.args[0]));    
+                return Math.tan(evaluate_custom(root.args[0]));
+            case 'abs':
+                return abs(evaluate_custom(root.args[0]));
+            case 'sqrt':
+                return sqrt(evaluate_custom(root.args[0]));
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }

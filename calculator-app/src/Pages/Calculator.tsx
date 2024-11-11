@@ -112,7 +112,7 @@ const Calculator: React.FC = () => {
       
         {/* First Row */}
         <Button label="a^b" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
-        <Button label="x!" className="operator-button" onClick={() => handleButtonClick("x!")}/>
+        <Button label="!" className="operator-button" onClick={() => handleButtonClick("!")}/>
         <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
         <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
         <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />

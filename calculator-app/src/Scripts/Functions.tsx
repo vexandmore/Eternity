@@ -90,8 +90,19 @@ export function arcCos(x: number): number {
 }
 
 export function factorial(n: number): number {
+    if (Math.floor(n) != n) {
+        throw Error("Can only take factorial of an integer");
+    }
     if (n <= 1) return 1;
     return n * factorial(n - 1);
+}
+
+export function sqrt(n: number): number {
+    return powerFunction(n, 1/2.0);
+}
+
+export function abs(n: number): number {
+    return n < 0 ? -n : n;
 }
 
 export function sin(x: number, terms: number = 10): number {
