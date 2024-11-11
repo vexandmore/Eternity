@@ -89,23 +89,24 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
       <div className="data-display">
         {selectedSeriesIndex !== null && !showHistogram && (
           <table className="data-table">
-            <thead>
-              <tr>
-                {Object.keys(seriesList[selectedSeriesIndex].data[0] || {}).map((header, index) => (
-                  <th key={index}>{header}</th>
+          <thead>
+            <tr>
+              <th colSpan={Object.keys(seriesList[selectedSeriesIndex].data[0] || {}).length}>
+                {seriesList[selectedSeriesIndex].name} {/* Display the series name as the header */}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {seriesList[selectedSeriesIndex].data.map((row: { [key: string]: any }, rowIndex: number) => (
+              <tr key={rowIndex}>
+                {Object.values(row).map((value, cellIndex) => (
+                  <td key={cellIndex}>{String(value)}</td>
                 ))}
               </tr>
-            </thead>
-            <tbody>
-              {seriesList[selectedSeriesIndex].data.map((row: { [key: string]: any }, rowIndex: number) => (
-                <tr key={rowIndex}>
-                  {Object.values(row).map((value, cellIndex) => (
-                    <td key={cellIndex}>{String(value)}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+        
         )}
         {showHistogram && histogramData && selectedSeriesIndex !== null && (
           <Bar
