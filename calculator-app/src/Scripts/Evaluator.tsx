@@ -1,4 +1,4 @@
-import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
+import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
 import { factorial, arcCos, powerFunction, sin, SD, sqrt, abs } from './Functions';
 
 
@@ -48,6 +48,13 @@ export function evaluate_custom(root: MathNode): number {
                 return sqrt(evaluate_custom(root.args[0]));
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
+        }
+    } else if (root instanceof SymbolNode) {
+        switch (root.name) {
+            case 'pi':
+                return 3.141592653589793;
+            default:
+                throw Error(`Don't recognize "${root.name}" symbol`);
         }
     } else if (root instanceof ParenthesisNode) {
         return evaluate_custom(root.content);

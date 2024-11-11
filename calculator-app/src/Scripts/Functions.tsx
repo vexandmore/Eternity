@@ -90,7 +90,7 @@ export function arcCos(x: number): number {
 }
 
 export function factorial(n: number): number {
-    if (Math.floor(n) != n) {
+    if (Math.floor(n) !== n) {
         throw Error("Can only take factorial of an integer");
     }
     if (n <= 1) return 1;
