@@ -13,6 +13,7 @@ const Calculator: React.FC = () => {
   const [result, setResult] = useState<string>("");
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
   const [csvData, setCsvData] = useState<any[]>([]); // State to store CSV data
+  const [justPressedEquals, setJustPressedEquals] = useState<boolean>(false);
 
   const handleButtonClick = (value: string) => {
     if (value === "=") {
@@ -26,6 +27,7 @@ const Calculator: React.FC = () => {
         setHistory([...history, newHistoryItem]);
 
         setResult(evaluatedResult.toString());
+        setJustPressedEquals(true);
       } catch (error) {
         console.log(error);
         setResult(String(error));
@@ -36,8 +38,15 @@ const Calculator: React.FC = () => {
     } else if (value === "DEL") {
       // Delete the last character from input
       setInput(input.slice(0, -1));
+      // Make it so that after deleting, can continue editing (even if just pressed =)
+      setJustPressedEquals(false);
     } else {
-      setInput(input + value);
+      if (justPressedEquals) {
+        setInput(value);
+        setJustPressedEquals(false);
+      } else {
+        setInput(input + value);
+      }
     }
   };
 
