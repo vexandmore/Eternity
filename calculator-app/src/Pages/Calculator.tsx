@@ -7,6 +7,12 @@ import { parse } from "mathjs";
 import { evaluate_custom } from "../Scripts/Evaluator";
 import "./Calculator.css";
 import Papa from "papaparse";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
+
+
 
 interface DataSeries {
   name: string;
@@ -20,6 +26,8 @@ const Calculator: React.FC = () => {
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [graphFunction, setGraphFunction] = useState<string | null>(null); // Define graphFunction state
+
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
   
@@ -139,7 +147,23 @@ const Calculator: React.FC = () => {
     }
   };
   
-  
+
+// Inside Calculator component's handleGraphButtonClick function
+const handleGraphButtonClick = () => {
+  console.log("Graph button clicked");
+  const graphableFunctions = ["sin", "cos", "tan", "log", "sqrt"];
+  const detectedFunction = graphableFunctions.find((func) => input.includes(func)); // Checks if the function exists in input
+  if (detectedFunction) {
+    console.log("Detected function for graphing:", detectedFunction);
+    setGraphFunction(detectedFunction); // Set the detected function to graph
+  } else {
+    console.log("No graphable function detected in the input.");
+    alert("No graphable function detected in the input.");
+  }
+};
+
+
+
   return (
     <div className="calculator-container">
       <h1 className="calculator-title">ETERNITY</h1>
@@ -216,12 +240,16 @@ const Calculator: React.FC = () => {
         <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
       </div>
       <ContentScreen
-            seriesList={seriesList}
-            selectedSeriesIndex={selectedSeriesIndex}
-            onSelectSeries={handleSelectSeries}
-            onAddSeries={handleAddSeriesClick}
-            onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
-          />
+  seriesList={seriesList}
+  selectedSeriesIndex={selectedSeriesIndex}
+  onSelectSeries={handleSelectSeries}
+  onAddSeries={handleAddSeriesClick}
+  onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
+  graphFunction={graphFunction}
+  onGraphButtonClick={handleGraphButtonClick} // Pass the function as a prop
+/>
+
+
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
         
       </div>

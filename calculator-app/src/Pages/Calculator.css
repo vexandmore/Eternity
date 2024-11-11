@@ -123,6 +123,7 @@ button:active {
 /* Data display area */
 .data-display {
   flex-grow: 1;
+  text-align: center;
   background-color: #f5fbff;
   padding: 10px;
   overflow-y: auto;
@@ -130,6 +131,23 @@ button:active {
   max-height: 320px;
   box-sizing: border-box;
   border-radius: 4px;
+}
+
+.data-table {
+  width: 100%; /* Ensures the table takes up full width */
+  text-align: center; /* Center-align text in all table cells */
+  margin: 0 auto; /* Centers the table itself within its container */
+}
+
+.data-table th {
+  text-align: center;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.data-table td {
+  text-align: center;
+  padding: 2px;
 }
 
 /* Tab container with fixed width */
@@ -198,6 +216,24 @@ button:active {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for emphasis */
 }
 
+/* Graph Button Styling */
+.graph-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  height: 25px; /* Set height to make it smaller but square */
+  width: 25px; /* Same as height to keep it square */
+  cursor: pointer;
+  color: white;
+  background-color: #6D6D6D;
+}
+
+.graph-button:hover {
+  background-color: #939292;
+}
 /* Histogram Button Styling */
 .histogram-button {
   position: absolute;
