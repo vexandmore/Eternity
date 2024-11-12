@@ -221,34 +221,41 @@ button:active {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: transparent;
+  background-color: #6D6D6D;
   border: none;
   font-size: 1.5rem;
-  height: 25px; /* Set height to make it smaller but square */
-  width: 25px; /* Same as height to keep it square */
+  height: 25px;
+  width: 25px;
   cursor: pointer;
   color: white;
-  background-color: #6D6D6D;
 }
 
 .graph-button:hover {
   background-color: #939292;
 }
+
+.graph-button.button-active {
+  background-color: #4CAF50; /* Active color, adjust as needed */
+}
+
 /* Histogram Button Styling */
 .histogram-button {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: transparent;
+  background-color: #6D6D6D;
   border: none;
   font-size: 1.5rem;
-  height: 25px; /* Set height to make it smaller but square */
-  width: 25px; /* Same as height to keep it square */
+  height: 25px;
+  width: 25px;
   cursor: pointer;
   color: white;
-  background-color: #6D6D6D;
 }
+
 .histogram-button:hover {
   background-color: #939292;
+}
 
+.histogram-button.button-active {
+  background-color: #4CAF50; /* Active color, adjust as needed */
 }

@@ -43,6 +43,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
   const [showGraph, setShowGraph] = useState(false);
   const [lineGraphData, setLineGraphData] = useState<any>(null);
 
+  // Get histogram data based on selected series
   const getHistogramData = () => {
     if (selectedSeriesIndex !== null) {
       const selectedData = seriesList[selectedSeriesIndex].data;
@@ -81,8 +82,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
     return null;
   };
 
-  const histogramData = getHistogramData();
-
+  // Generate graph data if a function is selected
   useEffect(() => {
     if (graphFunction && showGraph) {
       const xValues = Array.from({ length: 21 }, (_, i) => i - 10); // Range -10 to 10
@@ -118,33 +118,45 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
           },
         ],
       });
+    } else {
+      setLineGraphData(null);
     }
-    // Clean up the chart instance when component unmounts
-    return () => {
-      setLineGraphData(null); // Reset the graph data
-    };
   }, [graphFunction, showGraph]);
 
+  const histogramData = getHistogramData();
+
   const toggleHistogram = () => {
-    setShowHistogram(true);
-    setShowGraph(false);
+    setShowHistogram(!showHistogram);
+    setShowGraph(false); // Hide graph if histogram is toggled
   };
 
   const toggleGraph = () => {
-    setShowHistogram(false);
-    setShowGraph(true);
-    onGraphButtonClick();
+    setShowGraph(!showGraph);
+    setShowHistogram(false); // Hide histogram if graph is toggled
+    if (!showGraph) onGraphButtonClick();
+  };
+
+  const handleSeriesClick = (index: number) => {
+    onSelectSeries(index);
+    setShowGraph(false); // Hide graph if a series is clicked
+    setShowHistogram(false); // Hide histogram if a series is clicked
   };
 
   return (
     <div className="content-screen">
-      <button className="graph-button" onClick={toggleGraph}>
+      <button
+        className={`graph-button ${showGraph ? "button-active" : ""}`}
+        onClick={toggleGraph}
+      >
         <VscGraphLine />
       </button>
-      <button className="histogram-button" onClick={toggleHistogram}>
+      <button
+        className={`histogram-button ${showHistogram ? "button-active" : ""}`}
+        onClick={toggleHistogram}
+      >
         <VscGraph />
       </button>
-
+  
       <div className="data-display">
         {selectedSeriesIndex !== null && !showHistogram && !showGraph && (
           <table className="data-table">
@@ -197,7 +209,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
           />
         )}
       </div>
-
+  
       <div className="tab-container">
         <div className="tabs-scrollable">
           {seriesList.map((series, index) => (
@@ -228,6 +240,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
       </div>
     </div>
   );
+  
 };
 
 export default ContentScreen;
