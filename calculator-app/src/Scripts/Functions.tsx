@@ -107,7 +107,19 @@ export function abs(n: number): number {
 
 export const PI = 3.141592653589793;
 
-export function sin(x: number, terms: number = 10): number {
+// Reduce x into range [0, 2*pi]
+function reduce_to_2pi(x: number): number {
+    if (x >= 0 && x <= 2 * PI) {
+        return x;
+    } else if (x > (2 * PI)) {
+        return x % (2*PI);
+    } else {
+        return (2 * PI) - (abs(x) % 2 * PI);
+    }
+}
+
+export function sin(x: number, terms: number = 25): number {
+    x = reduce_to_2pi(x);
     let result: number = 0;
 
     for (let i = 0; i < terms; i++) {
@@ -122,7 +134,12 @@ export function sin(x: number, terms: number = 10): number {
             result -= term;
         }
     }
-
+    // Clamp result to 0 or 1 if very close
+    if (abs(result - 0.0) < 1e-14) {
+        return 0.0;
+    } else if (abs(result - 1.0) < 1e-14) {
+        return 1.0;
+    }
     return result;
 }
 
