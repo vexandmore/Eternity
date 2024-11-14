@@ -1,37 +1,28 @@
 .history {
     width: 100%;
-    max-width: 500px; /* Aligns width with the input bar */
-    height: 150px; /* Fixed height for the scrollable area */
-    overflow-y: auto; /* Ensures scrollability */
-    overflow-y: scroll;
+    max-width: 900px; /* Matches calculator width */
     background-color: #333;
     color: #fff;
     border-radius: 5px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    padding: 5px; /* Small padding for inner spacing */
+    overflow-y: auto;
+    height: 120px; /* Ensures it displays 5 entries without overlap */
+    box-shadow: inset 0px -2px 5px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box; /* Ensures padding doesn’t affect overall width */
 }
 
 .history ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    font-size: 1rem;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; /* Align items to the bottom */
 }
 
 .history li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0; /* Adjust padding for spacing */
-    border-bottom: 1px solid #555;
+    height: 24px; /* Consistent height for each entry */
     font-family: 'Orbitron', sans-serif;
-    min-height: 30px; /* Ensures consistent line height */
-    box-sizing: border-box;
+    border-bottom: 1px solid rgba(85, 85, 85, 0.5);
 }
 
 .history li:last-child {
@@ -41,15 +32,16 @@
 .history-item-left {
     text-align: left;
     flex: 1;
-    padding-right: 10px;
+    padding-left: 5px;
 }
 
 .history-item-right {
     text-align: right;
     white-space: nowrap;
+    padding-right: 5px;
 }
 
-/* Custom Scrollbar Styling */
+/* Scrollbar customization */
 .history::-webkit-scrollbar {
     width: 8px;
 }

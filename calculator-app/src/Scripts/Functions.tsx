@@ -89,6 +89,30 @@ export function arcCos(x: number): number {
     }
 }
 
+export function factorial(n: number): number {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+export function sin(x: number, terms: number = 10): number {
+    let result: number = 0;
+
+    for (let i = 0; i < terms; i++) {
+        // Calculate the power and factorial
+        const power: number = 2 * i + 1;
+        const term: number = powerFunction(x, power) / factorial(power);
+
+        // Alternate between adding and subtracting terms
+        if (i % 2 === 0) {
+            result += term;
+        } else {
+            result -= term;
+        }
+    }
+
+    return result;
+}
+
 // let sdArray: number[] = []; // Global array to store values
 
 // export function addValue(value: number): void {

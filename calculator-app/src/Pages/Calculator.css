@@ -1,4 +1,4 @@
-
+/* Main calculator container */
 .calculator-container {
   display: flex;
   flex-direction: column;
@@ -6,69 +6,21 @@
   padding: 20px;
   background-color: #d3d3d3;
   border-radius: 10px;
-  max-width: 500px;
+  max-width: 900px;
   margin: auto;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-
-.calculator-title {
-  font-family: 'Orbitron', sans-serif; /* Technology-inspired font */
-  font-size: 3rem; /* Slightly larger for impact */
-  color: #4CAFFF; /* Cool blue color for futuristic feel */
-  margin-bottom: 10px;
-  margin-top: 0px;
-
-  text-align: center;
-  letter-spacing: 0.1em; /* Adds space between letters for a sleek look */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Creates a glowing effect */
-  text-transform: uppercase; /* Ensures title is in all caps */
-}
-
-
-.history {
+/* Wrapper for history and display */
+.history-display-wrapper {
   width: 100%;
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  padding: 5px;
-  overflow-y: auto;
-  height: 125px; /* Set height for 5 lines */
+  max-width: 900px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  gap: 12px;
 }
 
-.history ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column-reverse; /* Reverse to start filling from bottom */
-}
-
-.history li {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  font-family: 'Orbitron', sans-serif;
-  border-bottom: 1px solid #555;
-}
-
-.history li:empty {
-  visibility: hidden; /* Hide empty placeholders */
-}
-
-
-.history-item-left {
-  text-align: left;
-}
-
-.history-item-right {
-  text-align: right;
-} 
-
-
+/* Display container */
 .display-container {
   width: 100%;
   background-color: #1c1c1c;
@@ -79,55 +31,102 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  margin-bottom: 12px;
 }
 
+/* Main content area with buttons and content screen */
+.main-content {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+}
 
+:root {
+  --button-height: 435px;
+}
+
+/* Button container */
 .buttons {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* Creates 7 equal columns */
+  grid-template-columns: repeat(7, 1fr);
   gap: 8px;
-  margin-top: 10px;
+  flex: 1;
+  min-height: var(--button-height);
+  height: var(--button-height); /* Explicitly set the height to match the content screen */
 }
 
-/* General button style */
+/* Content screen styling */
+.content-screen {
+  flex: 1;
+  padding: 10px;
+  background-color: #1c1c1c;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  min-height: var(--button-height);
+  height: var(--button-height); /* Ensure this matches the button container height */
+}
+
+/* Calculator title styling */
+.calculator-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  color: #4CAFFF;
+  margin-bottom: 10px;
+  margin-top: 0px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+}
+
+/* Button styles */
 button {
   padding: 15px;
   min-width: 50px;
   min-height: 50px;
-  font-size: 1.1em; /* Ensures consistent font size across buttons */
+  font-size: 1.1em;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   text-align: center;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-/* Specific Button Types */
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .number-button {
-  background-color: #4A90E2; /* Blue for numbers */
+  background-color: #4A90E2;
   color: white;
 }
 
 .operator-button {
-  background-color: #6D6D6D; /* Dark grey for operators and arrows */
+  background-color: #6D6D6D;
   color: white;
 }
 
 .transcendental-button {
-  background-color: #404040; /* Darker grey for transcendental functions */
+  background-color: #404040;
   color: white;
 }
 
-/* Override for Equal Button */
 .equal-button {
   max-height: 50px;
-  background-color: #4CAFFF !important; /* Light blue for equal sign */
+  background-color: #4CAFFF !important;
   color: white !important;
   font-size: 1.2em !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
- grid-column: span 2 / span 2;
+  grid-column: span 2 / span 2;
 }
-
-
