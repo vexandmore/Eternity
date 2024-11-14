@@ -4,7 +4,7 @@ import Button from "../Components/Button";
 import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History"; // Import the History component
 import { parse } from 'mathjs';
-import { evaluate_custom } from "../Scripts/Evaluator";
+import { evaluate_custom, CalculatorContext } from "../Scripts/Evaluator";
 import { Units } from "../Scripts/Functions"
 import './Calculator.css';
 import Papa from 'papaparse';
@@ -34,9 +34,17 @@ const Calculator: React.FC = () => {
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
+        // Build the context
+        let lastAnswer: number;
+        if (history.length == 0) {
+          lastAnswer = NaN;
+        } else {
+          lastAnswer = parseFloat(history[history.length - 1].result);
+        }
+        let context = new CalculatorContext(units, lastAnswer);
         // Use mathjs to parse into tree
         let expression_tree = parse(input);
-        let evaluatedResult = evaluate_custom(expression_tree, units);
+        let evaluatedResult = evaluate_custom(expression_tree, context);
         let strResult = toNDecimalPlaces(evaluatedResult, 7);
 
         // Add the equation and result to history
@@ -59,6 +67,7 @@ const Calculator: React.FC = () => {
       setJustPressedEquals(false);
     } else {
       if (justPressedEquals) {
+        setResult(""); // If we just produced an answer, clear after next input into the field
         setInput(value);
         setJustPressedEquals(false);
       } else {
