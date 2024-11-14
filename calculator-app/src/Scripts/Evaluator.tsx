@@ -1,5 +1,5 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, cos, tan, PI, SD, sqrt, abs, Units } from './Functions';
+import { factorial, arcCos, powerFunction, sin, cos, tan, PI, SD, sqrt, abs, Units, nth_root } from './Functions';
 
 
 export function evaluate_custom(root: MathNode, units: Units): number {
@@ -46,6 +46,8 @@ export function evaluate_custom(root: MathNode, units: Units): number {
                 return abs(evaluate_custom(root.args[0], units));
             case 'sqrt':
                 return sqrt(evaluate_custom(root.args[0], units));
+            case 'root':
+                return nth_root(evaluate_custom(root.args[0], units), evaluate_custom(root.args[1], units));
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }

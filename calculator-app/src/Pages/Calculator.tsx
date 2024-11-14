@@ -9,6 +9,20 @@ import { Units } from "../Scripts/Functions"
 import './Calculator.css';
 import Papa from 'papaparse';
 
+function toNDecimalPlaces(n: number, places: number): string {
+  let converted = n.toFixed(places);
+  // Remove unnecessary trailing 0s
+  let num_trailing_zeros = 0;
+  for (let i = converted.length - 1; i >= 0; i--) {
+    if (converted[i] == '0') {
+      num_trailing_zeros++;
+    } else {
+      break;
+    }
+  }
+  return converted.slice(0, converted.length - num_trailing_zeros - 1);
+}
+
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
@@ -23,12 +37,13 @@ const Calculator: React.FC = () => {
         // Use mathjs to parse into tree
         let expression_tree = parse(input);
         let evaluatedResult = evaluate_custom(expression_tree, units);
+        let strResult = toNDecimalPlaces(evaluatedResult, 7);
 
         // Add the equation and result to history
-        const newHistoryItem = { equation: input, result: evaluatedResult.toString() };
+        const newHistoryItem = { equation: input, result: strResult };
         setHistory([...history, newHistoryItem]);
 
-        setResult(evaluatedResult.toString());
+        setResult(strResult);
         setJustPressedEquals(true);
       } catch (error) {
         console.log(error);

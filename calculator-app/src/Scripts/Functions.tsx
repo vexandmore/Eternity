@@ -78,7 +78,7 @@ export function arcCos(x: number): number {
         result += a * x_power_n;
         x_power_n *= x;
     }
-    result = Math.sqrt(1 - x) * result;
+    result = sqrt(1 - x) * result;
 
     if (negative) {
         // If negative input, need to use the result
@@ -99,6 +99,10 @@ export function factorial(n: number): number {
 
 export function sqrt(n: number): number {
     return powerFunction(n, 1/2.0);
+}
+
+export function nth_root(nth: number, n: number) {
+    return powerFunction(n, 1/nth);
 }
 
 export function abs(n: number): number {
@@ -147,12 +151,6 @@ export function sin(x: number, units: Units, terms: number = 25) : number {
         } else {
             result -= term;
         }
-    }
-    // Clamp result to 0 or 1 if very close
-    if (abs(result - 0.0) < 1e-14) {
-        return 0.0;
-    } else if (abs(result - 1.0) < 1e-14) {
-        return 1.0;
     }
     return result;
 }
