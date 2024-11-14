@@ -105,6 +105,11 @@ export function abs(n: number): number {
     return n < 0 ? -n : n;
 }
 
+export enum Units {
+    DEG,
+    RAD
+}
+
 export const PI = 3.141592653589793;
 
 // Reduce x into range [0, 2*pi]
@@ -118,7 +123,16 @@ function reduce_to_2pi(x: number): number {
     }
 }
 
-export function sin(x: number, terms: number = 25): number {
+function convert_to_rad(x: number, units: Units): number {
+    if (units == Units.RAD) {
+        return x;
+    } else {
+        return x * (PI / 180);
+    }
+}
+
+export function sin(x: number, units: Units, terms: number = 25) : number {
+    x = convert_to_rad(x, units);
     x = reduce_to_2pi(x);
     let result: number = 0;
 
@@ -143,12 +157,12 @@ export function sin(x: number, terms: number = 25): number {
     return result;
 }
 
-export function cos(x: number, terms: number = 10): number {
-    return sin(x + (PI / 2), terms);
+export function cos(x: number, units: Units, terms: number = 25): number {
+    return sin(x + (PI / 2), terms, units);
 }
 
-export function tan(x: number, terms: number = 10): number {
-    return sin(x, terms) / cos(x, terms);
+export function tan(x: number, units: Units, terms: number = 25): number {
+    return sin(x, terms, units) / cos(x, terms, units);
 }
 
 // let sdArray: number[] = []; // Global array to store values

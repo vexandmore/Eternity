@@ -5,6 +5,7 @@ import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History"; // Import the History component
 import { parse } from 'mathjs';
 import { evaluate_custom } from "../Scripts/Evaluator";
+import { Units } from "../Scripts/Functions"
 import './Calculator.css';
 import Papa from 'papaparse';
 
@@ -14,13 +15,14 @@ const Calculator: React.FC = () => {
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
   const [csvData, setCsvData] = useState<any[]>([]); // State to store CSV data
   const [justPressedEquals, setJustPressedEquals] = useState<boolean>(false);
+  const [units, setUnits] = useState<Units>(Units.RAD);
 
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
         // Use mathjs to parse into tree
         let expression_tree = parse(input);
-        let evaluatedResult = evaluate_custom(expression_tree);
+        let evaluatedResult = evaluate_custom(expression_tree, units);
 
         // Add the equation and result to history
         const newHistoryItem = { equation: input, result: evaluatedResult.toString() };
@@ -49,6 +51,10 @@ const Calculator: React.FC = () => {
       }
     }
   };
+
+  const selectUnit = (value: Units) => {
+    setUnits(value);
+  }
 
   const handleSelectFromHistory = (equation: string) => {
     setInput(input + equation); // Populate input with the selected equation
@@ -111,8 +117,8 @@ const Calculator: React.FC = () => {
         <div className="buttons">
       
         {/* First Row */}
-        <Button label="a^b" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
-        <Button label="!" className="operator-button" onClick={() => handleButtonClick("!")}/>
+        <Button label="deg" className={(units == Units.DEG) ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
+        <Button label="rad" className={(units == Units.RAD) ? "selected-units-button" : "operator-button"}  onClick={() => setUnits(Units.RAD)}/>
         <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
         <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
         <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
@@ -120,8 +126,8 @@ const Calculator: React.FC = () => {
         <Button label="AC" className="operator-button" onClick={() => handleButtonClick("C")} />
     
         {/* Second Row */}
-        <Button label="a²" className="operator-button" onClick={() => handleButtonClick("a^2")}/>
-        <Button label="aᵇ" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
+        <Button label="a²" className="operator-button" onClick={() => handleButtonClick("^2")}/>
+        <Button label="x!" className="operator-button" onClick={() => handleButtonClick("!")} />
         <Button label="|a|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
         <Button label="←" className="operator-button" onClick={() => handleButtonClick("BACK")} />
         <Button label="→" className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
@@ -157,7 +163,7 @@ const Calculator: React.FC = () => {
     
         {/* Sixth Row */}
         <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
-        <Button label="xʸ" className="transcendental-button" onClick={() => handleButtonClick("x^y(")} />
+        <Button label="^" className="transcendental-button" onClick={() => handleButtonClick("^")} />
         <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
         <Button label="2" className="number-button" onClick={() => handleButtonClick("2")} />
