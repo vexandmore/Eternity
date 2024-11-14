@@ -235,13 +235,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
             </div>
           ))}
         </div>
-        <input
-          type="file"
-          id="file-upload"
-          style={{ display: "none" }}
-          onChange={onAddSeries}
-        />
-        <button className="add-button" onClick={() => document.getElementById("file-upload")?.click()}>
+        <button className="add-button" onClick={onAddSeries}>
         <span className="plus-symbol">+</span>
         </button>
       </div>
