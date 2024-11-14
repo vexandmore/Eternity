@@ -7,7 +7,6 @@ import { parse } from 'mathjs';
 import { evaluate_custom } from "../Scripts/Evaluator";
 import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 import './Calculator.css';
-import { error } from "console";
 import Papa from 'papaparse';
 
 const Calculator: React.FC = () => {
@@ -112,7 +111,7 @@ const Calculator: React.FC = () => {
         <div className="calculator">
         <div className="history-display-wrapper">
           <History history={history} onSelect={handleSelectFromHistory} />
-          <Display input={input} result={result} />
+          <Display input={input} result={result} error={parseError} />
         </div>
         <div className="main-content">
 
