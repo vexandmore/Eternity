@@ -1,5 +1,5 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, SD, sqrt, abs } from './Functions';
+import { factorial, arcCos, powerFunction, sin, cos, tan, PI, SD, sqrt, abs } from './Functions';
 
 
 export function evaluate_custom(root: MathNode): number {
@@ -39,9 +39,9 @@ export function evaluate_custom(root: MathNode): number {
             case 'sin':
                 return sin(evaluate_custom(root.args[0]));
             case 'cos':
-                return Math.cos(evaluate_custom(root.args[0]));
+                return cos(evaluate_custom(root.args[0]));
             case 'tan':
-                return Math.tan(evaluate_custom(root.args[0]));
+                return tan(evaluate_custom(root.args[0]));
             case 'abs':
                 return abs(evaluate_custom(root.args[0]));
             case 'sqrt':
@@ -52,7 +52,7 @@ export function evaluate_custom(root: MathNode): number {
     } else if (root instanceof SymbolNode) {
         switch (root.name) {
             case 'pi':
-                return 3.141592653589793;
+                return PI;
             default:
                 throw Error(`Don't recognize "${root.name}" symbol`);
         }

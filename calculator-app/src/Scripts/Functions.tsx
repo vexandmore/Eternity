@@ -105,6 +105,8 @@ export function abs(n: number): number {
     return n < 0 ? -n : n;
 }
 
+export const PI = 3.141592653589793;
+
 export function sin(x: number, terms: number = 10): number {
     let result: number = 0;
 
@@ -122,6 +124,14 @@ export function sin(x: number, terms: number = 10): number {
     }
 
     return result;
+}
+
+export function cos(x: number, terms: number = 10): number {
+    return sin(x + (PI / 2), terms);
+}
+
+export function tan(x: number, terms: number = 10): number {
+    return sin(x, terms) / cos(x, terms);
 }
 
 // let sdArray: number[] = []; // Global array to store values
