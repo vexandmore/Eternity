@@ -72,8 +72,8 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
           {
             label: "Frequency",
             data: frequencies,
-            backgroundColor: "rgba(75, 192, 192, 0.6)",
-            borderColor: "rgba(75, 192, 192, 1)",
+            backgroundColor: "rgba(92, 179, 255, 0.6)",
+            borderColor: "rgba(1, 1, 1, .7)",
             borderWidth: 1,
           },
         ],
@@ -113,7 +113,8 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
           {
             label: `${graphFunction} Graph`,
             data: yValues,
-            borderColor: "rgba(75, 192, 192, 1)",
+            borderColor: "rgba(92, 179, 255, 0.6)",
+
             fill: false,
           },
         ],
@@ -159,6 +160,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
   
       <div className="data-display">
         {selectedSeriesIndex !== null && !showHistogram && !showGraph && (
+          
           <table className="data-table">
             <thead>
               <tr>
@@ -179,6 +181,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
           </table>
         )}
         {showHistogram && histogramData && selectedSeriesIndex !== null && (
+        <div className="chart-container">
           <Bar
             data={histogramData}
             options={{
@@ -192,8 +195,11 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
               },
             }}
           />
+        </div>
+
         )}
         {showGraph && lineGraphData && (
+         <div className="chart-container">
           <Line
             data={lineGraphData}
             options={{
@@ -207,6 +213,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
               },
             }}
           />
+          </div>
         )}
       </div>
   
@@ -235,7 +242,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
           onChange={onAddSeries}
         />
         <button className="add-button" onClick={() => document.getElementById("file-upload")?.click()}>
-          +
+        <span className="plus-symbol">+</span>
         </button>
       </div>
     </div>

@@ -103,139 +103,170 @@ button:active {
 .content-screen {
   flex: 1;
   padding: 10px;
-  background-color: #333;
-  color: rgb(0, 0, 0);
+  background: linear-gradient(135deg, #ffffff, #f2f2f2); /* Bright gradient for a modern look */
+  color: #212529;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-  min-height: 380px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow depth */
   height: 380px;
   width: 100%;
-  max-width: 398px;
+  max-width: 400px;
   position: relative;
   overflow: hidden;
+  border: 1px solid #e0e0e0;
 }
 
-/* Data display area */
+/* Data display adjustments */
 .data-display {
   flex-grow: 1;
-  text-align: center;
-  background-color: #f5fbff;
-  padding: 10px;
-  overflow-y: auto;
+  display: flex; /* Enable flexbox for layout */
+  flex-direction: column; /* Stack elements vertically */
+  align-items: stretch; /* Stretch items to fit container width */
+  justify-content: flex-start; /* Align content to the top */
+  background-color: #fdfdfd;
+  padding: 0;
+  overflow-y: auto; /* Enable vertical scrolling */
   width: 100%;
-  max-height: 320px;
+  height: 100%;
+  max-height: 320px; /* Maintain consistent height */
   box-sizing: border-box;
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  margin-bottom: 8px;
+  position: relative; /* Required for child positioning */
 }
 
+/* Graph container centering */
+.chart-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  width: 100%; /* Full container width */
+  max-width: 90%; /* Constrain graph width slightly */
+  height: auto; /* Maintain aspect ratio */
+  margin: 20px auto; /* Add vertical spacing and center graph */
+  padding: 10px; /* Add padding for aesthetics */
+  background: linear-gradient(135deg, #d4e8ff, #a6c8ff); /* Vibrant background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Table styling enhancements */
 .data-table {
-  width: 100%; /* Ensures the table takes up full width */
-  text-align: center; /* Center-align text in all table cells */
-  margin: 0 auto; /* Centers the table itself within its container */
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  border-collapse: collapse;
+  animation: fadeIn 0.5s ease-in-out; /* Optional animation for entry */
 }
 
 .data-table th {
   text-align: center;
   font-weight: bold;
-  padding: 2px;
+  padding: 10px;
+  background: linear-gradient(135deg, #e1f3ff, #e1f3ff); /* Header gradient */
+  position: sticky;
+  top: 0; /* Stick to the top during scrolling */
+  z-index: 2; /* Ensure it stays above other elements */
+  border-bottom: 1px solid #b9bbbd;
+  height: 29px; /* Maintain consistent height */
+  font-size: 1rem;
+  color: #212529;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
 }
 
 .data-table td {
+  padding: 12px; /* Add padding for readability */
   text-align: center;
-  padding: 2px;
+  background-color: #d2d0d0;
+  border-bottom: 1px solid #b9bbbda0;
+  color: #495057;
 }
 
-/* Tab container with fixed width */
-.tab-container {
+.data-table td:nth-child(odd) {
+  background-color: #f4f2f2; /* Alternate row background */
+}
+
+.data-table td:hover {
+  background-color: #e8e8e8; /* Highlighted row on hover */
+}
+
+/* Scrollbar styling */
+.data-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.data-display::-webkit-scrollbar-thumb {
+  background-color: #b3b3b3;
+  border-radius: 8px;
+}
+
+.data-display::-webkit-scrollbar-track {
+  background-color: #e6e6e6;
+}
+
+/* Updated Graph Container Styling */
+.chart-container {
   display: flex;
-  align-items: center;
-  background-color: #f5fbff;
-  height: 50px;
-  width: 398px;
-  padding-left: 4px;
-  box-sizing: border-box;
-  position: relative;
-  border-radius: 4px;
+  background: linear-gradient(135deg, #e1f3ff, #e1f3ff); /* New background */
 
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  flex-direction: column; /* Stack title and graph vertically */
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  box-sizing: border-box; /* Include padding in width/height calculations */
+  overflow: hidden; /* Prevent overflow issues */
 }
 
-/* Scrollable tabs area */
-.tabs-scrollable {
-  display: flex;
-  overflow-x: auto; /* Enables horizontal scrolling */
-  white-space: nowrap;
-  flex-grow: 1; /* Takes up remaining space */
-  scrollbar-width: thin;
-  padding-right: 10px;
+/* Ensure the chart canvas is responsive */
+.chart-container canvas {
+  max-width: 100%; /* Restrict width for responsiveness */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Ensure proper rendering */
 }
 
-.tabs-scrollable::-webkit-scrollbar {
-  display: none; /* Hides scrollbar in WebKit-based browsers */
-}
-
-/* Each tab styling */
-.tab {
-  padding: 8px 16px;
-  background-color: #d3d3d3;
-  margin-right: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0; /* Prevents tabs from shrinking */
-  width: 79px;
-  height: 28px;
-  text-align: center;
-}
-
-/* Active tab style */
-.tab.active {
-  background-color: #ababab;
+/* Center the title above the graph */
+.chart-container .chart-title {
+  text-align: center; /* Center-align the title */
+  font-size: 1.2rem; /* Increase font size */
   font-weight: bold;
+  margin-bottom: 10px; /* Add space below the title */
+  color: #404040; /* Darker text for better visibility */
 }
 
-
-/* Plus button styling */
-.add-button {
-  background-color: #4A90E2;
-  color: #ffffff;
-  cursor: pointer;
-  text-align: center;
-  flex-shrink: 0;
-  height: 25px; /* Set height to make it smaller but square */
-  width: 25px; /* Same as height to keep it square */
-  font-size: 1,1rem; /* Adjust font size for visibility */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px; /* Slight rounding, but keeps it mostly square */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for emphasis */
+/* Add responsive behavior */
+.chart-container .chart {
+  width: 100%; /* Full width of container */
+  height: auto; /* Maintain responsiveness */
+  display: block;
 }
+
 
 /* Graph Button Styling */
 .graph-button {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: #6D6D6D;
+  background: linear-gradient(135deg, #5cb3ff, #0056b3); /* Vibrant blue gradient */
   border: none;
-  font-size: 1.5rem;
-  height: 25px;
-  width: 25px;
+  font-size: 1.2rem;
+  height: 36px;
+  width: 36px;
   cursor: pointer;
   color: white;
+  z-index: 10;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .graph-button:hover {
-  background-color: #939292;
-}
-
-.graph-button.button-active {
-  background-color: #4CAF50; /* Active color, adjust as needed */
+  background: #007bff;
 }
 
 /* Histogram Button Styling */
@@ -243,19 +274,139 @@ button:active {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #6D6D6D;
+  background: linear-gradient(135deg, #5cb3ff, #0056b3);
   border: none;
-  font-size: 1.5rem;
-  height: 25px;
-  width: 25px;
+  font-size: 1.2rem;
+  height: 36px;
+  width: 36px;
   cursor: pointer;
   color: white;
+  z-index: 10;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .histogram-button:hover {
-  background-color: #939292;
+  background: #007bff;
 }
 
-.histogram-button.button-active {
-  background-color: #4CAF50; /* Active color, adjust as needed */
+/* Tab container styling */
+.tab-container {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ececec, #d9d9d9); /* Slightly darker for contrast */
+  height: 50px;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid #d1d1d1;
+  overflow: hidden; /* Keep content inside the container */
+  margin: 0;
+  justify-content: space-between;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+
+  /* Mask gradient for fade effect, but retain container border */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%, /* Fully opaque to show the border */
+    rgba(0, 0, 0, 1) 10%, /* Start fade-in */
+    rgba(0, 0, 0, 1) 90%, /* Start fade-out */
+    rgba(0, 0, 0, 1) 100% /* Fully opaque to show the border */
+  );
+  -webkit-mask-size: calc(100% - 2px) 100%; /* Adjust size to leave borders visible */
+  -webkit-mask-repeat: no-repeat;
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  mask-size: calc(100% - 2px) 100%; /* Adjust size to leave borders visible */
+  mask-repeat: no-repeat;
+}
+
+
+/* Scrollable tabs */
+.tabs-scrollable {
+  display: flex;
+  flex-grow: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  padding: 0 10px; /* Ensure spacing within scrollable area */
+}
+
+.tabs-scrollable::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tabs-scrollable::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 10px;
+}
+
+.tabs-scrollable::-webkit-scrollbar-track {
+  background-color: #e6e6e6;
+}
+
+/* Each tab styling */
+.tab {
+  padding: 6px 12px;
+  background-color: #ffffff;
+  margin-right: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  transition: transform 0.2s ease-in-out, background 0.3s ease-in-out;
+}
+
+.tab:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  background: linear-gradient(135deg, #c0c0c0, #a9a9a9); /* Active tab gradient */
+  background-color: #5cb3ff;
+}
+
+.tab.active {
+  background-color: #5cb3ff;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Rotate only the + symbol */
+.add-button:hover .plus-symbol {
+  transform: rotate(90deg); /* Rotate the + symbol */
+  transition: transform 0.4s ease-in-out; /* Smooth rotation */
+  
+}
+
+/* Initial state of the symbol */
+.plus-symbol {
+  display: inline-block;
+  transition: transform 0.4s ease-in-out; /* Smooth rotation */
+}
+
+/* Plus button flush to the right */
+.add-button {
+  background: linear-gradient(135deg, #5cb3ff, #0056b3);
+  color: white;
+  height: 10px;
+  width: 10px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  margin-left: auto; /* Push to the end */
+
+}
+
+.add-button:hover  {
+ 
+  background: #007bff;
+
 }
