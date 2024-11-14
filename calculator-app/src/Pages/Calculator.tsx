@@ -65,6 +65,10 @@ const Calculator: React.FC = () => {
       setInput(input.slice(0, -1));
       // Make it so that after deleting, can continue editing (even if just pressed =)
       setJustPressedEquals(false);
+    } else if (value == "AC") {
+      setInput("");
+      setResult("");
+      setHistory([]);
     } else {
       if (justPressedEquals) {
         setResult(""); // If we just produced an answer, clear after next input into the field
@@ -146,8 +150,8 @@ const Calculator: React.FC = () => {
         <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
         <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
         <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
-        <Button label="DEL" className="operator-button" onClick={() => handleButtonClick("DEL")} />
-        <Button label="AC" className="operator-button" onClick={() => handleButtonClick("C")} />
+        <Button label="AC" className="operator-button" onClick={() => handleButtonClick("AC")} />
+        <Button label="C" className="operator-button" onClick={() => handleButtonClick("C")} />
     
         {/* Second Row */}
         <Button label="a²" className="operator-button" onClick={() => handleButtonClick("^2")}/>
@@ -155,7 +159,7 @@ const Calculator: React.FC = () => {
         <Button label="|a|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
         <Button label="←" className="operator-button" onClick={() => handleButtonClick("BACK")} />
         <Button label="→" className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
-        <Button label="%" className="operator-button" onClick={() => handleButtonClick("%")}/>
+        <Button label="DEL" className="operator-button" onClick={() => handleButtonClick("DEL")}/>
         <Button label="ANS" className="operator-button" onClick={() => handleButtonClick("ANS")}/>
     
         {/* Third Row */}
@@ -177,7 +181,7 @@ const Calculator: React.FC = () => {
         <Button label="x" className="operator-button" onClick={() => handleButtonClick("*")} />
     
         {/* Fifth Row */}
-        <Button label="log" className="operator-button" onClick={() => handleButtonClick("log(")} />
+        <Button label="%" className="operator-button" onClick={() => handleButtonClick("%")} />
         <Button label="ln" className="operator-button" onClick={() => handleButtonClick("ln(")} />
         <Button label="e^x" className="operator-button" onClick={() => handleButtonClick("e^(")} />
         <Button label="4" className="number-button" onClick={() => handleButtonClick("4")} />
