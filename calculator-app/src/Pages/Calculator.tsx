@@ -66,15 +66,57 @@ const Calculator: React.FC = () => {
       const file = event.target.files[0];
       Papa.parse(file, {
         complete: (result) => {
-          setCsvData(result.data);
-          console.log(result.data); // Log or process the CSV data
+          const data = result.data;
+
+          // **Error handling in data series**
+          //  Check whether data exists
+          if (!Array.isArray(data) || data.length === 0) {
+            setParseError("Uploaded CSV is empty or invalid");
+            setCsvData([]); // Clear CSV data
+            return;
+          }
+
+          // Check whether the data has at least one numeric column
+          const numericColumns = Object.keys(data[0]).filter((key) =>
+              !isNaN(parseFloat(data[0][key]))
+          );
+          if (numericColumns.length === 0) {
+            setParseError("No numeric columns found in the uploaded data");
+            setCsvData([]); // clear data
+            return;
+          }
+
+          // If all validations pass, update the CSV data and clear error messages
+          setCsvData(data);
+          setParseError(""); // Clear previous errors
+          console.log(data); // print CSV data
         },
-        header: true
+        header: true,
+        error: (error) => {
+          // Parsing error handling
+          setParseError("Error parsing the CSV file: " + error.message);
+          setCsvData([]); // clear CSV data
+        },
       });
     }
   };
 
-  
+  const handleInputChange = (newInput: string) => {
+    setInput(newInput); // Update input status
+    try {
+      const parsedExpression = parse(newInput); // Verify expression validity
+      setParseError(""); // Clear error prompts
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        setParseError(makeMessage(newInput, error)); // Display error message
+      } else {
+        setParseError(String(error));
+      }
+    }
+  };
+
+
+
   let csv_content = (<p>Future content will go here</p>);
   if (csvData.length !== 0) {
     csv_content = (
@@ -111,7 +153,7 @@ const Calculator: React.FC = () => {
         <div className="calculator">
         <div className="history-display-wrapper">
           <History history={history} onSelect={handleSelectFromHistory} />
-          <Display input={input} result={result} error={parseError} />
+          <Display input={input} result={result} error={parseError} onInputChange={handleInputChange} />
         </div>
         <div className="main-content">
 

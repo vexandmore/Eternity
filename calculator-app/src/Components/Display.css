@@ -33,3 +33,18 @@
       opacity: 100;
     }
   }
+
+.display-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.5rem;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #3a3a3a;
+    color: white;
+    outline: none;
+}
+
+.display-input:focus {
+    border-color: #4CAFFF;
+}
