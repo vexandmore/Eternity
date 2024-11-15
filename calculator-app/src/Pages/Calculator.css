@@ -1,77 +1,17 @@
-/* Main calculator container */
 .calculator-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #d3d3d3;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #f4f4f4, #d9d9d9); /* Professional neutral gradient */
+  border-radius: 20px; /* Smooth, rounded corners */
   max-width: 900px;
+  width: 100%;
   margin: auto;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3); /* Floating effect */
+  border: 1px solid #e0e0e0;
 }
 
-/* Wrapper for history and display */
-.history-display-wrapper {
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Display container */
-.display-container {
-  width: 100%;
-  background-color: #1c1c1c;
-  color: white;
-  font-size: 1.5rem;
-  padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
-  margin-bottom: 12px;
-}
-
-/* Main content area with buttons and content screen */
-.main-content {
-  display: flex;
-  width: 100%;
-  gap: 12px;
-}
-
-:root {
-  --button-height: 435px;
-}
-
-/* Button container */
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  flex: 1;
-  min-height: var(--button-height);
-  height: var(--button-height); /* Explicitly set the height to match the content screen */
-}
-
-/* Content screen styling */
-.content-screen {
-  flex: 1;
-  padding: 10px;
-  background-color: #1c1c1c;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  min-height: var(--button-height);
-  height: var(--button-height); /* Ensure this matches the button container height */
-}
 
 /* Calculator title styling */
 .calculator-title {
@@ -85,6 +25,35 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
   text-transform: uppercase;
 }
+
+/* Main content area with buttons and content screen */
+.main-content {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* Wrapper for history and display */
+.history-display-wrapper {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* Button container */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 380px;
+  height: 380px;
+}
+
 
 /* Button styles */
 button {
@@ -105,6 +74,12 @@ button:active {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
 .number-button {
   background-color: #4A90E2;
   color: white;
@@ -112,11 +87,6 @@ button:active {
 
 .operator-button {
   background-color: #6D6D6D;
-  color: white;
-}
-
-.selected-units-button {
-  background-color: #4A90E2;
   color: white;
 }
 
@@ -134,4 +104,317 @@ button:active {
   align-items: center !important;
   justify-content: center !important;
   grid-column: span 2 / span 2;
+}
+
+/* Content screen styling */
+.content-screen {
+  flex: 1;
+  padding: 10px;
+  background: linear-gradient(135deg, #ffffff, #f2f2f2); /* Bright gradient for a modern look */
+  color: #212529;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow depth */
+  height: 380px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+/* Data display adjustments */
+.data-display {
+  flex-grow: 1;
+  display: flex; /* Enable flexbox for layout */
+  flex-direction: column; /* Stack elements vertically */
+  align-items: stretch; /* Stretch items to fit container width */
+  justify-content: flex-start; /* Align content to the top */
+  background-color: #fdfdfd;
+  padding: 0;
+  overflow-y: auto; /* Enable vertical scrolling */
+  width: 100%;
+  height: 100%;
+  max-height: 320px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+  box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Graph container centering */
+.chart-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  width: 100%; /* Full container width */
+  max-width: 90%; /* Constrain graph width slightly */
+  height: auto; /* Maintain aspect ratio */
+  margin: 20px auto; /* Add vertical spacing and center graph */
+  padding: 10px; /* Add padding for aesthetics */
+  background: linear-gradient(135deg, #d4e8ff, #a6c8ff); /* Vibrant background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  
+}
+
+/* Table styling enhancements */
+.data-table {
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  border-collapse: collapse;
+  animation: fadeIn 0.5s ease-in-out; /* Optional animation for entry */
+}
+
+.data-table th {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  background: linear-gradient(135deg, #e1f3ff, #e1f3ff); /* Header gradient */
+  position: sticky;
+  top: 0; /* Stick to the top during scrolling */
+  z-index: 2; /* Ensure it stays above other elements */
+  border-bottom: 1px solid #b9bbbd;
+  height: 29px; /* Maintain consistent height */
+  font-size: 1rem;
+  color: #212529;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+.data-table td {
+  padding: 12px; /* Add padding for readability */
+  text-align: center;
+  background-color: #d2d0d0;
+  border-bottom: 1px solid #b9bbbda0;
+  color: #495057;
+}
+
+.data-table td:nth-child(odd) {
+  background-color: #f4f2f2; /* Alternate row background */
+}
+
+.data-table td:hover {
+  background-color: #e8e8e8; /* Highlighted row on hover */
+}
+
+/* Scrollbar styling */
+.data-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.data-display::-webkit-scrollbar-thumb {
+  background-color: #b3b3b3;
+  border-radius: 8px;
+}
+
+.data-display::-webkit-scrollbar-track {
+  background-color: #e6e6e6;
+}
+
+/* Updated Graph Container Styling */
+.chart-container {
+  display: flex;
+  background: linear-gradient(135deg, #e1f3ff, #e1f3ff); /* New background */
+
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  flex-direction: column; /* Stack title and graph vertically */
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  box-sizing: border-box; /* Include padding in width/height calculations */
+  overflow: hidden; /* Prevent overflow issues */
+}
+
+/* Ensure the chart canvas is responsive */
+.chart-container canvas {
+  max-width: 100%; /* Restrict width for responsiveness */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Ensure proper rendering */
+}
+
+/* Center the title above the graph */
+.chart-container .chart-title {
+  text-align: center; /* Center-align the title */
+  font-size: 1.2rem; /* Increase font size */
+  font-weight: bold;
+  margin-bottom: 10px; /* Add space below the title */
+  color: #404040; /* Darker text for better visibility */
+}
+
+/* Add responsive behavior */
+.chart-container .chart {
+  width: 100%; /* Full width of container */
+  height: auto; /* Maintain responsiveness */
+  display: block;
+}
+
+
+/* Graph Button Styling */
+.graph-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, #5cb3ff, #0056b3); /* Vibrant blue gradient */
+  border: none;
+  font-size: 1.2rem;
+  height: 36px;
+  width: 36px;
+  cursor: pointer;
+  color: white;
+  z-index: 10;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.graph-button:hover {
+  background: #007bff;
+}
+
+/* Histogram Button Styling */
+.histogram-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #5cb3ff, #0056b3);
+  border: none;
+  font-size: 1.2rem;
+  height: 36px;
+  width: 36px;
+  cursor: pointer;
+  color: white;
+  z-index: 10;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.histogram-button:hover {
+  background: #007bff;
+}
+
+/* Tab container styling */
+.tab-container {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ececec, #d9d9d9); /* Slightly darker for contrast */
+  height: 50px;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid #d1d1d1;
+  overflow: hidden; /* Keep content inside the container */
+  margin: 0;
+  justify-content: space-between;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+
+  /* Mask gradient for fade effect, but retain container border */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%, /* Fully opaque to show the border */
+    rgba(0, 0, 0, 1) 10%, /* Start fade-in */
+    rgba(0, 0, 0, 1) 90%, /* Start fade-out */
+    rgba(0, 0, 0, 1) 100% /* Fully opaque to show the border */
+  );
+  -webkit-mask-size: calc(100% - 2px) 100%; /* Adjust size to leave borders visible */
+  -webkit-mask-repeat: no-repeat;
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  mask-size: calc(100% - 2px) 100%; /* Adjust size to leave borders visible */
+  mask-repeat: no-repeat;
+}
+
+
+/* Scrollable tabs */
+.tabs-scrollable {
+  display: flex;
+  flex-grow: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  padding: 0 10px; /* Ensure spacing within scrollable area */
+}
+
+.tabs-scrollable::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tabs-scrollable::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 10px;
+}
+
+.tabs-scrollable::-webkit-scrollbar-track {
+  background-color: #e6e6e6;
+}
+
+/* Each tab styling */
+.tab {
+  padding: 6px 12px;
+  background-color: #ffffff;
+  margin-right: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  transition: transform 0.2s ease-in-out, background 0.3s ease-in-out;
+}
+
+.tab:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  background: linear-gradient(135deg, #c0c0c0, #a9a9a9); /* Active tab gradient */
+  background-color: #5cb3ff;
+}
+
+.tab.active {
+  background-color: #5cb3ff;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Rotate only the + symbol */
+.add-button:hover .plus-symbol {
+  transform: rotate(90deg); /* Rotate the + symbol */
+  transition: transform 0.4s ease-in-out; /* Smooth rotation */
+  
+}
+
+/* Initial state of the symbol */
+.plus-symbol {
+  display: inline-block;
+  transition: transform 0.4s ease-in-out; /* Smooth rotation */
+}
+
+/* Plus button flush to the right */
+.add-button {
+  background: linear-gradient(135deg, #5cb3ff, #0056b3);
+  color: white;
+  height: 10px;
+  width: 10px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  margin-left: auto; /* Push to the end */
+
+}
+
+.add-button:hover  {
+ 
+  background: #007bff;
+
 }
