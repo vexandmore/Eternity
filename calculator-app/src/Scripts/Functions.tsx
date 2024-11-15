@@ -131,3 +131,8 @@ export function SD(values: number[]): number {
     let sd = Math.sqrt(variance);
     return sd;
 }
+export function sinh(x: number): number {
+    const expX = eApprox(x);
+    const expNegX = eApprox(-x);
+    return (expX - expNegX) / 2;
+}
