@@ -14,13 +14,13 @@ function toNDecimalPlaces(n: number, places: number): string {
   // Remove unnecessary trailing 0s
   let num_trailing_zeros = 0;
   for (let i = converted.length - 1; i >= 0; i--) {
-    if (converted[i] == '0') {
+    if (converted[i] === '0') {
       num_trailing_zeros++;
     } else {
       break;
     }
   }
-  return converted.slice(0, converted.length - num_trailing_zeros - 1);
+  return converted.slice(0, converted.length - num_trailing_zeros);
 }
 
 const Calculator: React.FC = () => {
@@ -36,7 +36,7 @@ const Calculator: React.FC = () => {
       try {
         // Build the context
         let lastAnswer: number;
-        if (history.length == 0) {
+        if (history.length === 0) {
           lastAnswer = NaN;
         } else {
           lastAnswer = parseFloat(history[history.length - 1].result);
@@ -65,7 +65,7 @@ const Calculator: React.FC = () => {
       setInput(input.slice(0, -1));
       // Make it so that after deleting, can continue editing (even if just pressed =)
       setJustPressedEquals(false);
-    } else if (value == "AC") {
+    } else if (value === "AC") {
       setInput("");
       setResult("");
       setHistory([]);
@@ -79,10 +79,6 @@ const Calculator: React.FC = () => {
       }
     }
   };
-
-  const selectUnit = (value: Units) => {
-    setUnits(value);
-  }
 
   const handleSelectFromHistory = (equation: string) => {
     setInput(input + equation); // Populate input with the selected equation
@@ -145,8 +141,8 @@ const Calculator: React.FC = () => {
         <div className="buttons">
       
         {/* First Row */}
-        <Button label="deg" className={(units == Units.DEG) ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
-        <Button label="rad" className={(units == Units.RAD) ? "selected-units-button" : "operator-button"}  onClick={() => setUnits(Units.RAD)}/>
+        <Button label="deg" className={(units === Units.DEG) ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
+        <Button label="rad" className={(units === Units.RAD) ? "selected-units-button" : "operator-button"}  onClick={() => setUnits(Units.RAD)}/>
         <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
         <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
         <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />

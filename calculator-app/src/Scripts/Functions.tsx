@@ -128,7 +128,7 @@ function reduce_to_2pi(x: number): number {
 }
 
 function convert_to_rad(x: number, units: Units): number {
-    if (units == Units.RAD) {
+    if (units === Units.RAD) {
         return x;
     } else {
         return x * (PI / 180);
