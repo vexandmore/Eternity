@@ -43,6 +43,31 @@
   gap: 12px;
 }
 
+/* Display container */
+.display-container {
+  width: 100%;
+  background-color: #1c1c1c;
+  color: white;
+  font-size: 1.5rem;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  margin-bottom: 12px;
+}
+
+/* Main content area with buttons and content screen */
+.main-content {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+}
+
+:root {
+  --button-height: 435px;
+}
 
 /* Button container */
 .buttons {
@@ -50,10 +75,39 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
   flex: 1;
-  min-height: 380px;
-  height: 380px;
+  min-height: var(--button-height);
+  height: var(--button-height); /* Explicitly set the height to match the content screen */
 }
 
+/* Content screen styling */
+.content-screen {
+  flex: 1;
+  padding: 10px;
+  background-color: #1c1c1c;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  min-height: var(--button-height);
+  height: var(--button-height); /* Ensure this matches the button container height */
+}
+
+/* Calculator title styling */
+.calculator-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  color: #4CAFFF;
+  margin-bottom: 10px;
+  margin-top: 0px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+}
 
 /* Button styles */
 button {

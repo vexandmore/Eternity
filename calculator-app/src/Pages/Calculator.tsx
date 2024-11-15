@@ -5,6 +5,7 @@ import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History";
 import { parse } from "mathjs";
 import { evaluate_custom } from "../Scripts/Evaluator";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 import "./Calculator.css";
 import Papa from "papaparse";
 import { Line } from "react-chartjs-2";
@@ -18,6 +19,7 @@ interface DataSeries {
   name: string;
   data: any[];
 }
+import Papa from 'papaparse';
 
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -30,7 +32,8 @@ const Calculator: React.FC = () => {
 
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
-  
+    const [parseError, setParseError] = useState<string>("");
+
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
@@ -48,6 +51,7 @@ const Calculator: React.FC = () => {
     } else if (value === "C") {
       setInput("");
       setResult("");
+      setParseError("");
     } else if (value === "DEL") {
       // Handle delete within "SD()"
       if (input.includes("SD(") && input.endsWith(")")) {
@@ -79,7 +83,20 @@ const Calculator: React.FC = () => {
         const updatedInput = input.slice(0, end) + value + input.slice(end);
         setInput(updatedInput);
       } else {
-        setInput(input + value);
+        let new_input = input + value;
+      
+      try {
+        let expression_tree = parse(new_input);
+        setParseError("");
+      } catch(e) {
+        if (e instanceof SyntaxError) {
+          setParseError(makeMessage(new_input, e));
+        } else {
+          setParseError(String(e));
+        }
+      }
+
+      setInput(new_input);
       }
     }
   };
@@ -221,7 +238,7 @@ const handleGraphButtonClick = () => {
         <Button label="-" className="operator-button" onClick={() => handleButtonClick("-")} />
     
         {/* Sixth Row */}
-        <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
+        <Button label="arccos" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
         <Button label="xʸ" className="transcendental-button" onClick={() => handleButtonClick("x^y(")} />
         <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
@@ -235,9 +252,20 @@ const handleGraphButtonClick = () => {
         <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD()")} />
         <Button label="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." className="number-button" onClick={() => handleButtonClick(".")} />
-        
+
         {/* Equal Button spans two rows */}
         <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
+
+        {/* Eighth row, for the csv button */}
+        <input 
+          type="file" 
+          accept=".csv" 
+          style={{ display: "none" }} 
+          id="file-upload" 
+          onChange={handleFileUpload} 
+          />
+        <Button label="Import CSV" onClick={() => document.getElementById('file-upload')?.click()} />
+
       </div>
       <ContentScreen
   seriesList={seriesList}
