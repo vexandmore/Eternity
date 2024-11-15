@@ -7,44 +7,29 @@
     color: white;
     border-radius: 5px;
     margin-bottom: 10px;
-}
-
-.display-input {
+  }
+  
+  .display-input {
     text-align: left; /* Align input to the left */
     font-weight: bold;
-}
-
-.display-result {
+  }
+  
+  .display-result {
     text-align: right; /* Align result to the right */
     color: #4CAFFF;
-}
-
-.display-error {
+  }
+ 
+  .display-error {
     text-align: right;
     color: firebrick;
     animation: fade-in 0.5s;
-}
+  }
 
-@keyframes fade-in {
+  @keyframes fade-in {
     from {
-        opacity: 0;
+      opacity: 0;
     }
     to {
-        opacity: 100;
+      opacity: 100;
     }
-}
-
-.display-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.5rem;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    background-color: #3a3a3a;
-    color: white;
-    outline: none;
-}
-
-.display-input:focus {
-    border-color: #4CAFFF;
-}
+  }

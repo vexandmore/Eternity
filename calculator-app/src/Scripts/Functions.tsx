@@ -78,7 +78,7 @@ export function arcCos(x: number): number {
         result += a * x_power_n;
         x_power_n *= x;
     }
-    result = sqrt(1 - x) * result;
+    result = Math.sqrt(1 - x) * result;
 
     if (negative) {
         // If negative input, need to use the result
@@ -90,54 +90,11 @@ export function arcCos(x: number): number {
 }
 
 export function factorial(n: number): number {
-    if (Math.floor(n) !== n) {
-        throw Error("Can only take factorial of an integer");
-    }
     if (n <= 1) return 1;
     return n * factorial(n - 1);
 }
 
-export function sqrt(n: number): number {
-    return powerFunction(n, 1/2.0);
-}
-
-export function nth_root(nth: number, n: number) {
-    return powerFunction(n, 1/nth);
-}
-
-export function abs(n: number): number {
-    return n < 0 ? -n : n;
-}
-
-export enum Units {
-    DEG,
-    RAD
-}
-
-export const PI = 3.141592653589793;
-
-// Reduce x into range [0, 2*pi]
-function reduce_to_2pi(x: number): number {
-    if (x >= 0 && x <= 2 * PI) {
-        return x;
-    } else if (x > (2 * PI)) {
-        return x % (2*PI);
-    } else {
-        return (2 * PI) - (abs(x) % 2 * PI);
-    }
-}
-
-function convert_to_rad(x: number, units: Units): number {
-    if (units == Units.RAD) {
-        return x;
-    } else {
-        return x * (PI / 180);
-    }
-}
-
-export function sin(x: number, units: Units, terms: number = 25) : number {
-    x = convert_to_rad(x, units);
-    x = reduce_to_2pi(x);
+export function sin(x: number, terms: number = 10): number {
     let result: number = 0;
 
     for (let i = 0; i < terms; i++) {
@@ -152,15 +109,8 @@ export function sin(x: number, units: Units, terms: number = 25) : number {
             result -= term;
         }
     }
+
     return result;
-}
-
-export function cos(x: number, units: Units, terms: number = 25): number {
-    return sin(x + (PI / 2), terms, units);
-}
-
-export function tan(x: number, units: Units, terms: number = 25): number {
-    return sin(x, terms, units) / cos(x, terms, units);
 }
 
 // let sdArray: number[] = []; // Global array to store values
@@ -175,21 +125,14 @@ export function SD(values: number[]): number {
     }
     //n = population size
     let n = values.length;
-    let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
     let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n;
     let sd = Math.sqrt(variance);
     return sd;
 }
-
-export function MAD(values: number[]): number {
-    if (values.length === 0) {
-        throw new Error("Array is empty. Add values before calculating MAD.");
-    }
-
-    const mean: number = values.reduce((acc: number, val: number) => acc + val, 0) / values.length;
-
-    const absoluteDeviations: number[] = values.map((value: number) => Math.abs(value - mean));
-
-    return absoluteDeviations.reduce((acc: number, val: number) => acc + val, 0) / values.length;
+export function sinh(x: number): number {
+    const expX = eApprox(x);
+    const expNegX = eApprox(-x);
+    return (expX - expNegX) / 2;
 }
