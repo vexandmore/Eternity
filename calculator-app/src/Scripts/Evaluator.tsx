@@ -39,7 +39,7 @@ export function evaluate_custom(root: MathNode): number {
             case 'tan':
                 return Math.tan(evaluate_custom(root.args[0])); 
             case 'sinh':
-                return Math.tan(evaluate_custom(root.args[0]));    
+                return sinh(evaluate_custom(root.args[0]));    
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }
