@@ -31,8 +31,8 @@ const Calculator: React.FC = () => {
 
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
-    const [parseError, setParseError] = useState<string>("");
-
+  const [parseError, setParseError] = useState<string>("");
+  
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
@@ -82,8 +82,7 @@ const Calculator: React.FC = () => {
         const updatedInput = input.slice(0, end) + value + input.slice(end);
         setInput(updatedInput);
       } else {
-        let new_input = input + value;
-      
+        let new_input = input + value;      
       try {
         let expression_tree = parse(new_input);
         setParseError("");
@@ -237,7 +236,7 @@ const handleGraphButtonClick = () => {
         <Button label="-" className="operator-button" onClick={() => handleButtonClick("-")} />
     
         {/* Sixth Row */}
-        <Button label="arccos" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
+        <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
         <Button label="xʸ" className="transcendental-button" onClick={() => handleButtonClick("x^y(")} />
         <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
@@ -251,7 +250,7 @@ const handleGraphButtonClick = () => {
         <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD()")} />
         <Button label="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." className="number-button" onClick={() => handleButtonClick(".")} />
-
+        
         {/* Equal Button spans two rows */}
         <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
       </div>
