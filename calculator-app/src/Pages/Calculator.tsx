@@ -19,7 +19,6 @@ interface DataSeries {
   name: string;
   data: any[];
 }
-import Papa from 'papaparse';
 
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -187,7 +186,7 @@ const handleGraphButtonClick = () => {
       <div className="calculator" onDrop={handleDropOnInput} onDragOver={(e) => e.preventDefault()} > 
       <div className="history-display-wrapper">
       <History history={history} onSelect={handleSelectFromHistory} />
-      <Display input={input} result={result} />
+      <Display input={input} result={result} error={parseError} />
     </div>
      <div className="main-content">
         <div className="buttons">
@@ -255,17 +254,6 @@ const handleGraphButtonClick = () => {
 
         {/* Equal Button spans two rows */}
         <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
-
-        {/* Eighth row, for the csv button */}
-        <input 
-          type="file" 
-          accept=".csv" 
-          style={{ display: "none" }} 
-          id="file-upload" 
-          onChange={handleFileUpload} 
-          />
-        <Button label="Import CSV" onClick={() => document.getElementById('file-upload')?.click()} />
-
       </div>
       <ContentScreen
   seriesList={seriesList}
