@@ -1,6 +1,13 @@
 /* Button.css */
 
+/* Button.css */
+
 .button {
+    padding: 15px;
+    min-width: 50px;
+    min-height: 50px;
+    font-size: 1.1em;
+    border-radius: 5px;
     padding: 15px;
     min-width: 50px;
     min-height: 50px;
