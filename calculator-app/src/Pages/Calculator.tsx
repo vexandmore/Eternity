@@ -4,11 +4,11 @@ import Button from "../Components/Button";
 import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History";
 import { parse } from "mathjs";
-import { evaluate_custom } from "../Scripts/Evaluator";
+import { evaluate_custom, CalculatorContext } from "../Scripts/Evaluator";
+import { Units } from "../Scripts/Functions";
 import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 import "./Calculator.css";
 import Papa from "papaparse";
-import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
@@ -20,10 +20,29 @@ interface DataSeries {
   data: any[];
 }
 
+function toNDecimalPlaces(n: number, places: number): string {
+  let converted = n.toFixed(places);
+  // Remove unnecessary trailing 0s
+  let num_trailing_zeros = 0;
+  for (let i = converted.length - 1; i >= 0; i--) {
+    if (converted[i] === '.') {
+      num_trailing_zeros++;
+      break;
+    } else if (converted[i] === '0') {
+      num_trailing_zeros++;
+    } else {
+      break;
+    }
+  }
+  return converted.slice(0, converted.length - num_trailing_zeros);
+}
+
 const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
+  const [justPressedEquals, setJustPressedEquals] = useState<boolean>(false);
+  const [units, setUnits] = useState<Units>(Units.RAD);
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -36,13 +55,25 @@ const Calculator: React.FC = () => {
   const handleButtonClick = (value: string) => {
     if (value === "=") {
       try {
+        // Build the context
+        let lastAnswer: number;
+        if (history.length === 0) {
+          lastAnswer = NaN;
+        } else {
+          lastAnswer = parseFloat(history[history.length - 1].result);
+        }
+        let context = new CalculatorContext(units, lastAnswer);
+        // Use mathjs to parse into tree
         let expression_tree = parse(input);
-        let evaluatedResult = evaluate_custom(expression_tree);
-  
-        const newHistoryItem = { equation: input, result: evaluatedResult.toString() };
+        let evaluatedResult = evaluate_custom(expression_tree, context);
+        let strResult = toNDecimalPlaces(evaluatedResult, 7);
+
+        // Add the equation and result to history
+        const newHistoryItem = { equation: input, result: strResult };
         setHistory([...history, newHistoryItem]);
-  
-        setResult(evaluatedResult.toString());
+
+        setResult(strResult);
+        setJustPressedEquals(true);
       } catch (error) {
         console.log(error);
         setResult(String(error));
@@ -66,11 +97,18 @@ const Calculator: React.FC = () => {
         // Regular delete if not inside "SD()"
         setInput(input.slice(0, -1));
       }
+      // Make it so that after deleting, can continue editing (even if just pressed =)
+      setJustPressedEquals(false);
     } else if (value === "σ") {
       // Check if "SD()" is already in the input to avoid duplicates
       if (input.includes("SD()")) return;
       setInput(input + "SD()"); // Add "SD()" with empty parentheses
+    } else if (value === "AC") {
+        setInput("");
+        setResult("");
+        setHistory([]);
     } else {
+      
       // Check if input ends with "SD()" and insert the value inside the parentheses
       if (input.endsWith("SD()")) {
         // Insert value inside the parentheses, keeping commas within
@@ -82,20 +120,28 @@ const Calculator: React.FC = () => {
         const updatedInput = input.slice(0, end) + value + input.slice(end);
         setInput(updatedInput);
       } else {
-        let new_input = input + value;      
-      try {
-        let expression_tree = parse(new_input);
-        setParseError("");
-      } catch(e) {
-        if (e instanceof SyntaxError) {
-          setParseError(makeMessage(new_input, e));
+        let new_input;
+        if (justPressedEquals) {
+          setResult(""); // If we just produced an answer, clear after next input into the field
+          setInput(value);
+          setJustPressedEquals(false);
+          new_input = value;
         } else {
-          setParseError(String(e));
+          new_input = input + value;
         }
-      }
-
-      setInput(new_input);
-      }
+        try {
+          // We parse, but don't care about the return value (we just case if it's successful)
+          parse(new_input);
+          setParseError("");
+        } catch(e) {
+          if (e instanceof SyntaxError) {
+            setParseError(makeMessage(new_input, e));
+          } else {
+            setParseError(String(e));
+          }
+        }
+        setInput(new_input);
+      }    
     }
   };
  
@@ -191,21 +237,21 @@ const handleGraphButtonClick = () => {
         <div className="buttons">
           
         {/* First Row */}
-        <Button label="a^b" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
-        <Button label="x!" className="operator-button" onClick={() => handleButtonClick("x!")}/>
+        <Button label="deg" className={(units === Units.DEG) ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
+        <Button label="rad" className={(units === Units.RAD) ? "selected-units-button" : "operator-button"}  onClick={() => setUnits(Units.RAD)}/>
         <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
         <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
         <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
-        <Button label="DEL" className="operator-button" onClick={() => handleButtonClick("DEL")} />
-        <Button label="AC" className="operator-button" onClick={() => handleButtonClick("C")} />
+        <Button label="AC" className="operator-button" onClick={() => handleButtonClick("AC")} />
+        <Button label="C" className="operator-button" onClick={() => handleButtonClick("C")} />
     
         {/* Second Row */}
-        <Button label="a²" className="operator-button" onClick={() => handleButtonClick("a^2")}/>
-        <Button label="aᵇ" className="operator-button" onClick={() => handleButtonClick("a^b(")} />
+        <Button label="a²" className="operator-button" onClick={() => handleButtonClick("^2")}/>
+        <Button label="x!" className="operator-button" onClick={() => handleButtonClick("!")} />
         <Button label="|a|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
         <Button label="←" className="operator-button" onClick={() => handleButtonClick("BACK")} />
         <Button label="→" className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
-        <Button label="%" className="operator-button" onClick={() => handleButtonClick("%")}/>
+        <Button label="DEL" className="operator-button" onClick={() => handleButtonClick("DEL")}/>
         <Button label="ANS" className="operator-button" onClick={() => handleButtonClick("ANS")}/>
     
         {/* Third Row */}
@@ -227,7 +273,7 @@ const handleGraphButtonClick = () => {
         <Button label="x" className="operator-button" onClick={() => handleButtonClick("*")} />
     
         {/* Fifth Row */}
-        <Button label="log" className="operator-button" onClick={() => handleButtonClick("log(")} />
+        <Button label="%" className="operator-button" onClick={() => handleButtonClick("%")} />
         <Button label="ln" className="operator-button" onClick={() => handleButtonClick("ln(")} />
         <Button label="e^x" className="operator-button" onClick={() => handleButtonClick("e^(")} />
         <Button label="4" className="number-button" onClick={() => handleButtonClick("4")} />
@@ -237,7 +283,7 @@ const handleGraphButtonClick = () => {
     
         {/* Sixth Row */}
         <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
-        <Button label="xʸ" className="transcendental-button" onClick={() => handleButtonClick("x^y(")} />
+        <Button label="^" className="transcendental-button" onClick={() => handleButtonClick("^")} />
         <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
         <Button label="2" className="number-button" onClick={() => handleButtonClick("2")} />

@@ -90,6 +90,11 @@ button:hover {
   color: white;
 }
 
+.selected-units-button {
+  background-color: #4A90E2;
+  color: white;
+}
+
 .transcendental-button {
   background-color: #404040;
   color: white;
