@@ -9,9 +9,7 @@ import { Units } from "../Scripts/Functions";
 import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 import "./Calculator.css";
 import Papa from "papaparse";
-import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
-import { VscDebugBreakpointLog } from "react-icons/vsc";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
 
@@ -27,7 +25,7 @@ function toNDecimalPlaces(n: number, places: number): string {
   // Remove unnecessary trailing 0s
   let num_trailing_zeros = 0;
   for (let i = converted.length - 1; i >= 0; i--) {
-    if (converted[i] == '.') {
+    if (converted[i] === '.') {
       num_trailing_zeros++;
       break;
     } else if (converted[i] === '0') {
@@ -132,7 +130,8 @@ const Calculator: React.FC = () => {
           new_input = input + value;
         }
         try {
-          let expression_tree = parse(new_input);
+          // We parse, but don't care about the return value (we just case if it's successful)
+          parse(new_input);
           setParseError("");
         } catch(e) {
           if (e instanceof SyntaxError) {
