@@ -11,6 +11,7 @@ import "./Calculator.css";
 import Papa from "papaparse";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
+import { VscDebugBreakpointLog } from "react-icons/vsc";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
 
@@ -26,7 +27,10 @@ function toNDecimalPlaces(n: number, places: number): string {
   // Remove unnecessary trailing 0s
   let num_trailing_zeros = 0;
   for (let i = converted.length - 1; i >= 0; i--) {
-    if (converted[i] === '0') {
+    if (converted[i] == '.') {
+      num_trailing_zeros++;
+      break;
+    } else if (converted[i] === '0') {
       num_trailing_zeros++;
     } else {
       break;
@@ -106,11 +110,7 @@ const Calculator: React.FC = () => {
         setResult("");
         setHistory([]);
     } else {
-      if (justPressedEquals) {
-        setResult(""); // If we just produced an answer, clear after next input into the field
-        setInput(value);
-        setJustPressedEquals(false);
-      } 
+      
       // Check if input ends with "SD()" and insert the value inside the parentheses
       if (input.endsWith("SD()")) {
         // Insert value inside the parentheses, keeping commas within
@@ -122,7 +122,15 @@ const Calculator: React.FC = () => {
         const updatedInput = input.slice(0, end) + value + input.slice(end);
         setInput(updatedInput);
       } else {
-        let new_input = input + value;
+        let new_input;
+        if (justPressedEquals) {
+          setResult(""); // If we just produced an answer, clear after next input into the field
+          setInput(value);
+          setJustPressedEquals(false);
+          new_input = value;
+        } else {
+          new_input = input + value;
+        }
         try {
           let expression_tree = parse(new_input);
           setParseError("");
@@ -133,7 +141,6 @@ const Calculator: React.FC = () => {
             setParseError(String(e));
           }
         }
-
         setInput(new_input);
       }    
     }
