@@ -41,7 +41,7 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
         switch (root.fn.name) {
             case 'acos':
                 return arcCos(evaluate_custom(root.args[0], context));
-            case 'SD':
+            case 'sd':
             // Evaluate each argument of SD and pass them as an array to the SD function
              const values = root.args.map(arg => evaluate_custom(arg, context));
             return SD(values);
