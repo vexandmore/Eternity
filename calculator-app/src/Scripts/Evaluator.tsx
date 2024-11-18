@@ -1,5 +1,5 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
-import { arcCos, powerFunction, sin, SD } from './Functions';
+import { arcCos, powerFunction, sin, SD, logBase } from './Functions';
 
 
 export function evaluate_custom(root: MathNode): number {
@@ -38,6 +38,14 @@ export function evaluate_custom(root: MathNode): number {
                 return Math.cos(evaluate_custom(root.args[0]));
             case 'tan':
                 return Math.tan(evaluate_custom(root.args[0]));    
+            case 'log':
+                if (root.args.length === 2) {
+                    const base = evaluate_custom(root.args[1]);
+                    const arg = evaluate_custom(root.args[0]);
+                    return logBase(arg, base);
+                } else {
+                    throw Error("Log function requires exactly two arguments: log(x, base)");
+                }
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }
