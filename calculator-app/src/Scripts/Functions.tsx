@@ -227,9 +227,4 @@ export function sinh(x: number): number {
     const expX = eApprox(x);
     const expNegX = eApprox(-x);
     return (expX - expNegX) / 2;
-<<<<<<< HEAD
 }
-=======
-}
-
->>>>>>> f1d308017a6fee3576715d6c2943e4c2870de3d8
