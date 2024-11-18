@@ -1,28 +1,40 @@
 export function powerFunction(b: number, x: number): number {
+    if (b < 0 && x % 1 !== 0) {
+        throw new Error("Fractional exponents for negative bases result in complex numbers, which are not supported.");
+    }
+
     let output = 1;
     let decimalPart = 0.0;
-    let integerPart = x;
+    let integerPart = Math.floor(Math.abs(x));
     let absX = Math.abs(x);
 
     if (x % 1 !== 0) {
-        // Check if x has a decimal part
-        integerPart = Math.floor(absX);
+        // If x has a decimal part
         decimalPart = absX - integerPart;
     }
 
-    output = calcExp(b, integerPart);
+    // Calculate the positive exponent part
+    output = calcExp(Math.abs(b), integerPart);
 
     if (decimalPart !== 0.0) {
-        output *= eApprox(decimalPart * lnApprox(b));
+        // Approximate fractional exponent part using e^x
+        output *= eApprox(decimalPart * lnApprox(Math.abs(b)));
     }
 
-    if (x >= 0 || x % 2 === 0) {
-        return output;
-    } else {
-        return output;
+    // If the exponent is negative, return the reciprocal of the result
+    if (x < 0) {
+        output = 1 / output;
     }
-};
 
+    // Handle the sign of the base for integer exponents
+    if (b < 0 && x % 2 !== 0) {
+        output = -output;
+    }
+
+    return output;
+}
+
+// Helper function for logarithm approximation
 function lnApprox(b: number): number {
     if (b > 0 && b < 2) {
         let x = b - 1;
@@ -38,10 +50,11 @@ function lnApprox(b: number): number {
 
         return result;
     } else {
-        return lnApprox(b / 2) + 0.69314718056;
+        return lnApprox(b / 2) + 0.69314718056; // Approximate ln(x) for b >= 2
     }
-};
+}
 
+// Exponential approximation (for fractional exponents)
 function eApprox(x: number): number {
     let result = 1.0;
     let term = 1.0;
@@ -54,18 +67,29 @@ function eApprox(x: number): number {
     }
 
     return result;
-};
+}
 
+// Efficient Exponentiation for Integer Exponents (Exponentiation by Squaring)
 function calcExp(b: number, x: number): number {
     if (x === 0) {
         return 1;
-    } else if (x % 2 === 0) {
-        const temp = calcExp(b, Math.floor(x / 2));
-        return temp * temp;
-    } else {
-        return b * calcExp(b, x - 1);
     }
+
+    let result = 1;
+    let base = b;
+
+    // Exponentiation by squaring
+    while (x > 0) {
+        if (x % 2 === 1) {
+            result *= base;
+        }
+        base *= base;
+        x = Math.floor(x / 2);
+    }
+
+    return result;
 }
+
 
 let A_terms: number[] = [1.5707963050, -0.2145988016, 0.0889789874, -0.0501743046,
     0.0308918810, -0.0170881256, 0.0066700901, -0.0012624911];

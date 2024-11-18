@@ -46,7 +46,6 @@ const Calculator: React.FC = () => {
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [graphFunction, setGraphFunction] = useState<string | null>(null); // Define graphFunction state
 
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
@@ -215,16 +214,7 @@ const Calculator: React.FC = () => {
 
   // Inside Calculator component's handleGraphButtonClick function
   const handleGraphButtonClick = () => {
-    console.log("Graph button clicked");
-    const graphableFunctions = ["sin", "cos", "tan", "log", "sqrt"];
-    const detectedFunction = graphableFunctions.find((func) => input.includes(func)); // Checks if the function exists in input
-    if (detectedFunction) {
-      console.log("Detected function for graphing:", detectedFunction);
-      setGraphFunction(detectedFunction); // Set the detected function to graph
-    } else {
-      console.log("No graphable function detected in the input.");
-      alert("No graphable function detected in the input.");
-    }
+
   };
 
   useEffect(() => {
@@ -336,14 +326,16 @@ const Calculator: React.FC = () => {
         <Button label="=" dataKey="Enter" className="equal-button" onClick={() => handleButtonClick("=")} />
       </div>
       <ContentScreen
-  seriesList={seriesList}
-  selectedSeriesIndex={selectedSeriesIndex}
-  onSelectSeries={handleSelectSeries}
-  onAddSeries={handleAddSeriesClick}
-  onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
-  graphFunction={graphFunction}
-  onGraphButtonClick={handleGraphButtonClick} // Pass the function as a prop
-/>
+        seriesList={seriesList}
+        selectedSeriesIndex={selectedSeriesIndex}
+        onSelectSeries={handleSelectSeries}
+        onAddSeries={handleAddSeriesClick}
+        onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
+        graphFunction={input}
+        units = {units}
+        history = {history}
+        onGraphButtonClick={handleGraphButtonClick} // Pass the function as a prop
+      />
 
 
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
