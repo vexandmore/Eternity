@@ -1,3 +1,4 @@
+
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
 import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, logBase} from './Functions';
 
