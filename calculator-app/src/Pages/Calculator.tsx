@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Display from "../Components/Display";
 import Button from "../Components/Button";
 import ContentScreen from "../Components/ContentScreen";
@@ -46,7 +46,6 @@ const Calculator: React.FC = () => {
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [graphFunction, setGraphFunction] = useState<string | null>(null); // Define graphFunction state
 
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
@@ -84,8 +83,8 @@ const Calculator: React.FC = () => {
       setParseError("");
     } else if (value === "DEL") {
       // Handle delete within "SD()"
-      if (input.includes("SD(") && input.endsWith(")")) {
-        const start = input.indexOf("SD(") + 3; // Start index of the content within "SD("
+      if (input.includes("sd(") && input.endsWith(")")) {
+        const start = input.indexOf("sd(") + 3; // Start index of the content within "SD("
         const end = input.lastIndexOf(")");     // End index of the content within "SD("
         const insideContent = input.slice(start, end);
         
@@ -101,8 +100,8 @@ const Calculator: React.FC = () => {
       setJustPressedEquals(false);
     } else if (value === "σ") {
       // Check if "SD()" is already in the input to avoid duplicates
-      if (input.includes("SD()")) return;
-      setInput(input + "SD()"); // Add "SD()" with empty parentheses
+      if (input.includes("sd()")) return;
+      setInput(input + "sd()"); // Add "SD()" with empty parentheses
     } else if (value === "AC") {
         setInput("");
         setResult("");
@@ -110,11 +109,11 @@ const Calculator: React.FC = () => {
     } else {
       
       // Check if input ends with "SD()" and insert the value inside the parentheses
-      if (input.endsWith("SD()")) {
+      if (input.endsWith("sd()")) {
         // Insert value inside the parentheses, keeping commas within
         const updatedInput = input.slice(0, -1) + value + ")";
         setInput(updatedInput);
-      } else if (input.includes("SD(") && input.endsWith(")")) {
+      } else if (input.includes("sd(") && input.endsWith(")")) {
         // Ensure commas are added correctly inside SD function
         const end = input.lastIndexOf(")");     // End index of the content within "SD("
         const updatedInput = input.slice(0, end) + value + input.slice(end);
@@ -195,7 +194,7 @@ const Calculator: React.FC = () => {
     if (seriesDataString) {
       try {
         const seriesData = JSON.parse(seriesDataString);
-        if (input.endsWith("SD()")) {
+        if (input.endsWith("sd()")) {
           // Insert series data inside the "SD()" brackets
           const updatedInput = input.slice(0, -1) + seriesData.join(", ") + ")";
           setInput(updatedInput);
@@ -208,22 +207,44 @@ const Calculator: React.FC = () => {
     }
   };
   
-
-// Inside Calculator component's handleGraphButtonClick function
-const handleGraphButtonClick = () => {
-  console.log("Graph button clicked");
-  const graphableFunctions = ["sin", "cos", "tan", "log", "sqrt"];
-  const detectedFunction = graphableFunctions.find((func) => input.includes(func)); // Checks if the function exists in input
-  if (detectedFunction) {
-    console.log("Detected function for graphing:", detectedFunction);
-    setGraphFunction(detectedFunction); // Set the detected function to graph
-  } else {
-    console.log("No graphable function detected in the input.");
-    alert("No graphable function detected in the input.");
-  }
-};
+  const handleInputChange = (newInput: string) => {
+    setInput(newInput);
+  };
 
 
+  // Inside Calculator component's handleGraphButtonClick function
+  const handleGraphButtonClick = () => {
+
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      let key = event.key; // The key pressed
+      const isShiftPressed = event.shiftKey;
+      if (isShiftPressed && /^[a-zA-Z]$/.test(key)) {
+        key = "shift+"+key.toLowerCase();
+      }
+      const button = document.querySelector(`button[data-key="${key}"]`);
+      const display = document.querySelector(`input[class="display-input"]`);
+      if (button && (display as HTMLInputElement) !== document.activeElement) {
+        (button as HTMLButtonElement).click(); // Simulate button click
+        const display = document.querySelector(`input[class="display-input"]`);
+      }
+      else if(key === "Enter")
+      {
+        (button as HTMLButtonElement).click(); // Simulate button click
+        const display = document.querySelector(`input[class="display-input"]`);
+      }
+    };
+    const display = document.querySelector(`input[class="display-input"]`);
+    (display as HTMLButtonElement).focus();
+    // Attach the keydown event listener
+    window.addEventListener("keydown", handleKeyDown);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="calculator-container">
@@ -231,84 +252,90 @@ const handleGraphButtonClick = () => {
       <div className="calculator" onDrop={handleDropOnInput} onDragOver={(e) => e.preventDefault()} > 
       <div className="history-display-wrapper">
       <History history={history} onSelect={handleSelectFromHistory} />
-      <Display input={input} result={result} error={parseError} />
+      <Display
+            input={input}
+            result={result}
+            error={parseError}
+            onInputChange={handleInputChange} // Pass callback to Display
+          />
     </div>
      <div className="main-content">
         <div className="buttons">
           
-        {/* First Row */}
-        <Button label="deg" className={(units === Units.DEG) ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
-        <Button label="rad" className={(units === Units.RAD) ? "selected-units-button" : "operator-button"}  onClick={() => setUnits(Units.RAD)}/>
-        <Button label="∧" className="operator-button" onClick={() => handleButtonClick("^")} />
+        <Button label="deg"  className={units === Units.DEG ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
+        <Button label="rad"  className={units === Units.RAD ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.RAD)} />
+        <Button label="∧" dataKey="^" className="operator-button" onClick={() => handleButtonClick("^")} />
         <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
         <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
-        <Button label="AC" className="operator-button" onClick={() => handleButtonClick("AC")} />
-        <Button label="C" className="operator-button" onClick={() => handleButtonClick("C")} />
-    
+        <Button label="AC" dataKey="shift+Delete" className="operator-button" onClick={() => handleButtonClick("AC")} />
+        <Button label="C" dataKey="Delete" className="operator-button" onClick={() => handleButtonClick("C")} />
+
         {/* Second Row */}
-        <Button label="a²" className="operator-button" onClick={() => handleButtonClick("^2")}/>
-        <Button label="x!" className="operator-button" onClick={() => handleButtonClick("!")} />
-        <Button label="|a|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
-        <Button label="←" className="operator-button" onClick={() => handleButtonClick("BACK")} />
-        <Button label="→" className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
-        <Button label="DEL" className="operator-button" onClick={() => handleButtonClick("DEL")}/>
-        <Button label="ANS" className="operator-button" onClick={() => handleButtonClick("ANS")}/>
-    
+        <Button label="a²" dataKey="shift+p" className="operator-button" onClick={() => handleButtonClick("^2")} />
+        <Button label="x!" dataKey="!" className="operator-button" onClick={() => handleButtonClick("!")} />
+        <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
+        <Button label="←"  className="operator-button" onClick={() => handleButtonClick("BACK")} />
+        <Button label="→"  className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
+        <Button label="DEL" dataKey="Backspace" className="operator-button" onClick={() => handleButtonClick("DEL")} />
+        <Button label="ANS" dataKey="a" className="operator-button" onClick={() => handleButtonClick("ANS")} />
+
         {/* Third Row */}
-        <Button label="√" className="operator-button" onClick={() => handleButtonClick("sqrt(")} />
-        <Button label="ⁿ√" className="operator-button" onClick={() => handleButtonClick("root(")} />
-        <Button label="π" className="operator-button" onClick={() => handleButtonClick("pi")} />
-        <Button label="(" className="operator-button" onClick={() => handleButtonClick("(")} />
-        <Button label=")" className="operator-button" onClick={() => handleButtonClick(")")} />
-        <Button label="," className="operator-button" onClick={() => handleButtonClick(",")}/>
-        <Button label="÷" className="operator-button" onClick={() => handleButtonClick("/")} />
-    
+        <Button label="√" dataKey="r" className="operator-button" onClick={() => handleButtonClick("sqrt(")} />
+        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("root(")} />
+        <Button label="π" dataKey="p" className="operator-button" onClick={() => handleButtonClick("pi")} />
+        <Button label="(" dataKey="(" className="operator-button" onClick={() => handleButtonClick("(")} />
+        <Button label=")" dataKey=")" className="operator-button" onClick={() => handleButtonClick(")")} />
+        <Button label="," dataKey="," className="operator-button" onClick={() => handleButtonClick(",")} />
+        <Button label="÷" dataKey="÷" className="operator-button" onClick={() => handleButtonClick("/")} />
+
         {/* Fourth Row */}
-        <Button label="sin" className="operator-button" onClick={() => handleButtonClick("sin(")} />
-        <Button label="cos" className="operator-button" onClick={() => handleButtonClick("cos(")} />
-        <Button label="tan" className="operator-button" onClick={() => handleButtonClick("tan(")} />
-        <Button label="7" className="number-button" onClick={() => handleButtonClick("7")} />
-        <Button label="8" className="number-button" onClick={() => handleButtonClick("8")} />
-        <Button label="9" className="number-button" onClick={() => handleButtonClick("9")} />
-        <Button label="x" className="operator-button" onClick={() => handleButtonClick("*")} />
-    
+        <Button label="sin" dataKey="s" className="operator-button" onClick={() => handleButtonClick("sin(")} />
+        <Button label="cos" dataKey="c" className="operator-button" onClick={() => handleButtonClick("cos(")} />
+        <Button label="tan" dataKey="t" className="operator-button" onClick={() => handleButtonClick("tan(")} />
+        <Button label="7" dataKey="7" className="number-button" onClick={() => handleButtonClick("7")} />
+        <Button label="8" dataKey="8" className="number-button" onClick={() => handleButtonClick("8")} />
+        <Button label="9" dataKey="9" className="number-button" onClick={() => handleButtonClick("9")} />
+        <Button label="x" dataKey="*" className="operator-button" onClick={() => handleButtonClick("*")} />
+
         {/* Fifth Row */}
-        <Button label="%" className="operator-button" onClick={() => handleButtonClick("%")} />
-        <Button label="ln" className="operator-button" onClick={() => handleButtonClick("ln(")} />
-        <Button label="e^x" className="operator-button" onClick={() => handleButtonClick("e^(")} />
-        <Button label="4" className="number-button" onClick={() => handleButtonClick("4")} />
-        <Button label="5" className="number-button" onClick={() => handleButtonClick("5")} />
-        <Button label="6" className="number-button" onClick={() => handleButtonClick("6")} />
-        <Button label="-" className="operator-button" onClick={() => handleButtonClick("-")} />
-    
+        <Button label="%" dataKey="%" className="operator-button" onClick={() => handleButtonClick("%")} />
+        <Button label="ln" dataKey="shift+l" className="operator-button" onClick={() => handleButtonClick("ln(")} />
+        <Button label="e^x" dataKey="e" className="operator-button" onClick={() => handleButtonClick("e^(")} />
+        <Button label="4" dataKey="4" className="number-button" onClick={() => handleButtonClick("4")} />
+        <Button label="5" dataKey="5" className="number-button" onClick={() => handleButtonClick("5")} />
+        <Button label="6" dataKey="6" className="number-button" onClick={() => handleButtonClick("6")} />
+        <Button label="-" dataKey="-" className="operator-button" onClick={() => handleButtonClick("-")} />
+
         {/* Sixth Row */}
-        <Button label="arccos(x)" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
-        <Button label="^" className="transcendental-button" onClick={() => handleButtonClick("^")} />
-        <Button label="logb(x)" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
-        <Button label="1" className="number-button" onClick={() => handleButtonClick("1")} />
-        <Button label="2" className="number-button" onClick={() => handleButtonClick("2")} />
-        <Button label="3" className="number-button" onClick={() => handleButtonClick("3")} />
-        <Button label="+" className="operator-button" onClick={() => handleButtonClick("+")} />
-    
+        <Button label="arccos(x)" dataKey="shift+c" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
+        <Button label="^" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("^")} />
+        <Button label="logb(x)" dataKey="l" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
+        <Button label="1" dataKey="1" className="number-button" onClick={() => handleButtonClick("1")} />
+        <Button label="2" dataKey="2" className="number-button" onClick={() => handleButtonClick("2")} />
+        <Button label="3" dataKey="3" className="number-button" onClick={() => handleButtonClick("3")} />
+        <Button label="+" dataKey="+" className="operator-button" onClick={() => handleButtonClick("+")} />
+
         {/* Seventh Row */}
-        <Button label="MAD" className="transcendental-button" onClick={() => handleButtonClick("MAD(")} />
-        <Button label="sinh(x)" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
-        <Button label="σ" className="transcendental-button" onClick={() => handleButtonClick("SD()")} />
-        <Button label="0" className="number-button" onClick={() => handleButtonClick("0")} />
-        <Button label="." className="number-button" onClick={() => handleButtonClick(".")} />
-        
+        <Button label="mad"  dataKey="m" className="transcendental-button" onClick={() => handleButtonClick("mad(")} />
+        <Button label="sinh(x)" dataKey="shift+s" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
+        <Button label="σ" dataKey="shift+d" className="transcendental-button" onClick={() => handleButtonClick("sd()")} />
+        <Button label="0" dataKey="0" className="number-button" onClick={() => handleButtonClick("0")} />
+        <Button label="." dataKey="." className="number-button" onClick={() => handleButtonClick(".")} />
+
         {/* Equal Button spans two rows */}
-        <Button label="=" className="equal-button" onClick={() => handleButtonClick("=")} />
+        <Button label="=" dataKey="Enter" className="equal-button" onClick={() => handleButtonClick("=")} />
       </div>
       <ContentScreen
-  seriesList={seriesList}
-  selectedSeriesIndex={selectedSeriesIndex}
-  onSelectSeries={handleSelectSeries}
-  onAddSeries={handleAddSeriesClick}
-  onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
-  graphFunction={graphFunction}
-  onGraphButtonClick={handleGraphButtonClick} // Pass the function as a prop
-/>
+        seriesList={seriesList}
+        selectedSeriesIndex={selectedSeriesIndex}
+        onSelectSeries={handleSelectSeries}
+        onAddSeries={handleAddSeriesClick}
+        onDragSeries={(name: string) => window.localStorage.setItem("draggedSeries", name)}
+        graphFunction={input}
+        units = {units}
+        history = {history}
+        onGraphButtonClick={handleGraphButtonClick} // Pass the function as a prop
+      />
 
 
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />

@@ -10,11 +10,19 @@
   }
   
   .display-input {
+    width:80%;
     text-align: left; /* Align input to the left */
     font-weight: bold;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color:#fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size:20px;
   }
   
   .display-result {
+    width:20%;
     text-align: right; /* Align result to the right */
     color: #4CAFFF;
   }
