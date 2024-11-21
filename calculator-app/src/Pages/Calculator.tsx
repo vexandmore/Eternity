@@ -47,7 +47,9 @@ const Calculator: React.FC = () => {
   const [units, setUnits] = useState<Units>(Units.RAD);
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
@@ -98,6 +100,7 @@ const Calculator: React.FC = () => {
         }
       } else {
         // Regular delete if not inside "SD()"
+
         setInput(input.slice(0, -1));
       }
       // Make it so that after deleting, can continue editing (even if just pressed =)
@@ -111,7 +114,8 @@ const Calculator: React.FC = () => {
         setResult("");
         setHistory([]);
     } else {
-      
+      let addIndex = 0;
+
       // Check if input ends with "SD()" and insert the value inside the parentheses
       if (input.endsWith("sd()")) {
         // Insert value inside the parentheses, keeping commas within
@@ -130,7 +134,13 @@ const Calculator: React.FC = () => {
           setJustPressedEquals(false);
           new_input = value;
         } else {
-          new_input = input + value;
+          let addIndex = inputRef?.current?.selectionStart ?? input.length;
+          new_input = input.slice(0, addIndex) + value + input.slice(addIndex);
+          addIndex = addIndex + value.length;
+          setTimeout(() => {
+            inputRef?.current?.focus();
+            inputRef?.current?.setSelectionRange(addIndex, addIndex);
+          }, 100);
         }
         try {
           // We parse, but don't care about the return value (we just case if it's successful)
@@ -175,6 +185,28 @@ const Calculator: React.FC = () => {
     // Display it
     setInput(toShow.equation);
     setResult(toShow.result);
+  };
+
+  const moveLeft = () => {
+    if (inputRef?.current?.selectionStart != null) {
+      let newCursorLocation = inputRef.current.selectionStart - 1;
+      newCursorLocation = newCursorLocation < 0 ? 0 : newCursorLocation;
+      inputRef.current.setSelectionRange(newCursorLocation, newCursorLocation);
+      inputRef.current.focus();
+    } else {
+      console.log("no ref");
+    }
+  };
+
+  const moveRight = () => {
+    if (inputRef?.current?.selectionStart != null) {
+      let newCursorLocation = inputRef.current.selectionStart + 1;
+      newCursorLocation = newCursorLocation > input.length ? input.length : newCursorLocation;
+      inputRef.current.setSelectionRange(newCursorLocation, newCursorLocation);
+      inputRef.current.focus();
+    } else {
+      console.log("no ref");
+    }
   };
  
   const handleSelectFromHistory = (equation: string) => {
@@ -290,6 +322,7 @@ const Calculator: React.FC = () => {
             result={result}
             error={parseError}
             onInputChange={handleInputChange} // Pass callback to Display
+            ref={inputRef}
           />
     </div>
      <div className="main-content">
@@ -307,8 +340,8 @@ const Calculator: React.FC = () => {
         <Button label="a²" dataKey="shift+p" className="operator-button" onClick={() => handleButtonClick("^2")} />
         <Button label="x!" dataKey="!" className="operator-button" onClick={() => handleButtonClick("!")} />
         <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
-        <Button label="←"  className="operator-button" onClick={() => handleButtonClick("BACK")} />
-        <Button label="→"  className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
+        <Button label="←"  className="operator-button" onClick={moveLeft} />
+        <Button label="→"  className="operator-button" onClick={moveRight} />
         <Button label="DEL" dataKey="Backspace" className="operator-button" onClick={() => handleButtonClick("DEL")} />
         <Button label="ANS" dataKey="a" className="operator-button" onClick={() => handleButtonClick("ANS")} />
 
