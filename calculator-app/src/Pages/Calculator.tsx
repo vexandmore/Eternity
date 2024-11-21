@@ -75,7 +75,7 @@ const Calculator: React.FC = () => {
         setJustPressedEquals(true);
       } catch (error) {
         console.log(error);
-        setResult(String(error));
+        setParseError(String(error));
       }
     } else if (value === "C") {
       setInput("");
