@@ -147,7 +147,7 @@ function reduce_to_2pi(x: number): number {
     } else if (x > (2 * PI)) {
         return x % (2*PI);
     } else {
-        return (2 * PI) - (abs(x) % 2 * PI);
+        return (2 * PI) - (abs(x) % (2 * PI));
     }
 }
 
@@ -180,7 +180,8 @@ export function sin(x: number, units: Units, terms: number = 25) : number {
 }
 
 export function cos(x: number, units: Units, terms: number = 25): number {
-    return sin(x + (PI / 2), terms, units);
+    x = convert_to_rad(x, units);
+    return sin(x + (PI / 2.0), terms, Units.RAD);
 }
 
 export function tan(x: number, units: Units, terms: number = 25): number {
