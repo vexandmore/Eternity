@@ -41,11 +41,15 @@ const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
+  // While going backward through history, some will be hidden (for when we redo)
+  const [hiddenHistory, setHiddenHistory] = useState<{ equation: string; result: string }[]>([]);
   const [justPressedEquals, setJustPressedEquals] = useState<boolean>(false);
   const [units, setUnits] = useState<Units>(Units.RAD);
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
   const [selectedSeriesIndex, setSelectedSeriesIndex] = useState<number | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // const [showHistogram, setShowHistogram] = useState<boolean>(false);
 
@@ -70,6 +74,8 @@ const Calculator: React.FC = () => {
         // Add the equation and result to history
         const newHistoryItem = { equation: input, result: strResult };
         setHistory([...history, newHistoryItem]);
+        // Prevent us from redoing beyond here
+        setHiddenHistory([]);
 
         setResult(strResult);
         setJustPressedEquals(true);
@@ -94,6 +100,7 @@ const Calculator: React.FC = () => {
         }
       } else {
         // Regular delete if not inside "SD()"
+
         setInput(input.slice(0, -1));
       }
       // Make it so that after deleting, can continue editing (even if just pressed =)
@@ -107,7 +114,8 @@ const Calculator: React.FC = () => {
         setResult("");
         setHistory([]);
     } else {
-      
+      let addIndex = 0;
+
       // Check if input ends with "SD()" and insert the value inside the parentheses
       if (input.endsWith("sd()")) {
         // Insert value inside the parentheses, keeping commas within
@@ -126,7 +134,13 @@ const Calculator: React.FC = () => {
           setJustPressedEquals(false);
           new_input = value;
         } else {
-          new_input = input + value;
+          let addIndex = inputRef?.current?.selectionStart ?? input.length;
+          new_input = input.slice(0, addIndex) + value + input.slice(addIndex);
+          addIndex = addIndex + value.length;
+          setTimeout(() => {
+            inputRef?.current?.focus();
+            inputRef?.current?.setSelectionRange(addIndex, addIndex);
+          }, 100);
         }
         try {
           // We parse, but don't care about the return value (we just case if it's successful)
@@ -141,6 +155,57 @@ const Calculator: React.FC = () => {
         }
         setInput(new_input);
       }    
+    }
+  };
+
+  const undo = () => {
+    if (history.length === 0) {
+      return;
+    }
+
+    // Move current into the hidden history
+    let currentEquation = {equation: input, result: result};
+    setHiddenHistory([currentEquation, ...hiddenHistory]);
+    // Grab previous from history and display it
+    let toShow = history[history.length - 1];
+    setHistory(history.slice(0, history.length - 1));
+    setInput(toShow.equation);
+    setResult(toShow.result);
+  };
+
+  const redo = () => {
+    if (hiddenHistory.length === 0) {
+      return;
+    }
+    // set aside what we were at
+    setHistory([...history, {equation: input, result: result}]);
+    // Grab the future element
+    let toShow = hiddenHistory[0];
+    setHiddenHistory([...hiddenHistory.slice(1)]);
+    // Display it
+    setInput(toShow.equation);
+    setResult(toShow.result);
+  };
+
+  const moveLeft = () => {
+    if (inputRef?.current?.selectionStart != null) {
+      let newCursorLocation = inputRef.current.selectionStart - 1;
+      newCursorLocation = newCursorLocation < 0 ? 0 : newCursorLocation;
+      inputRef.current.setSelectionRange(newCursorLocation, newCursorLocation);
+      inputRef.current.focus();
+    } else {
+      console.log("no ref");
+    }
+  };
+
+  const moveRight = () => {
+    if (inputRef?.current?.selectionStart != null) {
+      let newCursorLocation = inputRef.current.selectionStart + 1;
+      newCursorLocation = newCursorLocation > input.length ? input.length : newCursorLocation;
+      inputRef.current.setSelectionRange(newCursorLocation, newCursorLocation);
+      inputRef.current.focus();
+    } else {
+      console.log("no ref");
     }
   };
  
@@ -257,6 +322,7 @@ const Calculator: React.FC = () => {
             result={result}
             error={parseError}
             onInputChange={handleInputChange} // Pass callback to Display
+            ref={inputRef}
           />
     </div>
      <div className="main-content">
@@ -265,8 +331,8 @@ const Calculator: React.FC = () => {
         <Button label="deg"  className={units === Units.DEG ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
         <Button label="rad"  className={units === Units.RAD ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.RAD)} />
         <Button label="∧" dataKey="^" className="operator-button" onClick={() => handleButtonClick("^")} />
-        <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
-        <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
+        <Button label="↶" className="operator-button" onClick={() => undo()} />
+        <Button label="↷" className="operator-button" onClick={() => redo()} />
         <Button label="AC" dataKey="shift+Delete" className="operator-button" onClick={() => handleButtonClick("AC")} />
         <Button label="C" dataKey="Delete" className="operator-button" onClick={() => handleButtonClick("C")} />
 
@@ -274,8 +340,8 @@ const Calculator: React.FC = () => {
         <Button label="a²" dataKey="shift+p" className="operator-button" onClick={() => handleButtonClick("^2")} />
         <Button label="x!" dataKey="!" className="operator-button" onClick={() => handleButtonClick("!")} />
         <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
-        <Button label="←"  className="operator-button" onClick={() => handleButtonClick("BACK")} />
-        <Button label="→"  className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
+        <Button label="←"  className="operator-button" onClick={moveLeft} />
+        <Button label="→"  className="operator-button" onClick={moveRight} />
         <Button label="DEL" dataKey="Backspace" className="operator-button" onClick={() => handleButtonClick("DEL")} />
         <Button label="ANS" dataKey="a" className="operator-button" onClick={() => handleButtonClick("ANS")} />
 

@@ -55,7 +55,7 @@ function lnApprox(b: number): number {
 }
 
 // Exponential approximation (for fractional exponents)
-function eApprox(x: number): number {
+export function eApprox(x: number): number {
     let result = 1.0;
     let term = 1.0;
     let i = 1;
@@ -147,7 +147,7 @@ function reduce_to_2pi(x: number): number {
     } else if (x > (2 * PI)) {
         return x % (2*PI);
     } else {
-        return (2 * PI) - (abs(x) % 2 * PI);
+        return (2 * PI) + (x % (2 * PI));
     }
 }
 
@@ -161,7 +161,9 @@ function convert_to_rad(x: number, units: Units): number {
 
 export function sin(x: number, units: Units, terms: number = 25) : number {
     x = convert_to_rad(x, units);
+    console.log("before reducing " + x);
     x = reduce_to_2pi(x);
+    console.log("After reducing " + x);
     let result: number = 0;
 
     for (let i = 0; i < terms; i++) {
@@ -180,11 +182,13 @@ export function sin(x: number, units: Units, terms: number = 25) : number {
 }
 
 export function cos(x: number, units: Units, terms: number = 25): number {
-    return sin(x + (PI / 2), terms, units);
+    x = convert_to_rad(x, units);
+    x = x + (PI / 2.0);
+    return sin(x, Units.RAD, terms);
 }
 
 export function tan(x: number, units: Units, terms: number = 25): number {
-    return sin(x, terms, units) / cos(x, terms, units);
+    return sin(x, units, terms) / cos(x, units, terms);
 }
 
 // let sdArray: number[] = []; // Global array to store values
@@ -221,8 +225,9 @@ export function logBase(x: number, b: number, terms: number = 100): number {
     // log_b(x) = ln(x) / ln(b)
     return lnX / lnB;
 }
+
 //this function is helps to calculate the logbfunction
-function lnAppx(x: number, terms: number = 100): number {
+export function lnAppx(x: number, terms: number = 100): number {
     if (x <= 0) {
         throw new Error("ln is undefined for x <= 0");
     }
