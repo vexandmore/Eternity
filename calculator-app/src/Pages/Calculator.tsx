@@ -41,6 +41,8 @@ const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<string>("");
   const [history, setHistory] = useState<{ equation: string; result: string }[]>([]);
+  // While going backward through history, some will be hidden (for when we redo)
+  const [hiddenHistory, setHiddenHistory] = useState<{ equation: string; result: string }[]>([]);
   const [justPressedEquals, setJustPressedEquals] = useState<boolean>(false);
   const [units, setUnits] = useState<Units>(Units.RAD);
   const [seriesList, setSeriesList] = useState<DataSeries[]>([]);
@@ -142,6 +144,35 @@ const Calculator: React.FC = () => {
         setInput(new_input);
       }    
     }
+  };
+
+  const undo = () => {
+    if (history.length === 0) {
+      return;
+    }
+
+    // Move current into the hidden history
+    let currentEquation = {equation: input, result: result};
+    setHiddenHistory([currentEquation, ...hiddenHistory]);
+    // Grab previous from history and display it
+    let toShow = history[history.length - 1];
+    setHistory(history.slice(0, history.length - 1));
+    setInput(toShow.equation);
+    setResult(toShow.result);
+  };
+
+  const redo = () => {
+    if (hiddenHistory.length === 0) {
+      return;
+    }
+    // set aside what we were at
+    setHistory([...history, {equation: input, result: result}]);
+    // Grab the future element
+    let toShow = hiddenHistory[0];
+    setHiddenHistory([...hiddenHistory.slice(1)]);
+    // Display it
+    setInput(toShow.equation);
+    setResult(toShow.result);
   };
  
   const handleSelectFromHistory = (equation: string) => {
@@ -265,8 +296,8 @@ const Calculator: React.FC = () => {
         <Button label="deg"  className={units === Units.DEG ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
         <Button label="rad"  className={units === Units.RAD ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.RAD)} />
         <Button label="∧" dataKey="^" className="operator-button" onClick={() => handleButtonClick("^")} />
-        <Button label="↶" className="operator-button" onClick={() => handleButtonClick("UNDO")} />
-        <Button label="↷" className="operator-button" onClick={() => handleButtonClick("REDO")} />
+        <Button label="↶" className="operator-button" onClick={() => undo()} />
+        <Button label="↷" className="operator-button" onClick={() => redo()} />
         <Button label="AC" dataKey="shift+Delete" className="operator-button" onClick={() => handleButtonClick("AC")} />
         <Button label="C" dataKey="Delete" className="operator-button" onClick={() => handleButtonClick("C")} />
 
