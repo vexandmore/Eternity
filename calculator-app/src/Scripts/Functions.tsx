@@ -55,7 +55,7 @@ function lnApprox(b: number): number {
 }
 
 // Exponential approximation (for fractional exponents)
-function eApprox(x: number): number {
+export function eApprox(x: number): number {
     let result = 1.0;
     let term = 1.0;
     let i = 1;
@@ -225,8 +225,9 @@ export function logBase(x: number, b: number, terms: number = 100): number {
     // log_b(x) = ln(x) / ln(b)
     return lnX / lnB;
 }
+
 //this function is helps to calculate the logbfunction
-function lnAppx(x: number, terms: number = 100): number {
+export function lnAppx(x: number, terms: number = 100): number {
     if (x <= 0) {
         throw new Error("ln is undefined for x <= 0");
     }

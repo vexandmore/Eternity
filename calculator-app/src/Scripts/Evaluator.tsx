@@ -1,6 +1,6 @@
 
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, logBase} from './Functions';
+import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, logBase, lnAppx, eApprox} from './Functions';
 
 export class CalculatorContext {
     units: Units;
@@ -28,7 +28,13 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'divide':
                 return evaluate_custom(root.args[0], context) / evaluate_custom(root.args[1], context);
             case 'pow':
-                return powerFunction(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
+                // special case for e^x
+                let arg0 = root.args[0];
+                if (arg0 instanceof SymbolNode && arg0.name == "e") {
+                    return eApprox(evaluate_custom(root.args[1], context));
+                } else {
+                    return powerFunction(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
+                }
             case 'factorial':
                 return factorial(evaluate_custom(root.args[0], context));
             case 'unaryMinus':
@@ -59,7 +65,9 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
                     return logBase(arg, base);
                 } else {
                         throw Error("Log function requires exactly two arguments: log(x, base)");
-                    }
+                }
+            case 'ln':
+                return lnAppx(evaluate_custom(root.args[0], context));
             case 'abs':
                 return abs(evaluate_custom(root.args[0], context));
             case 'sqrt':
@@ -80,6 +88,8 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
                     throw Error("Can't use ANS if have no previous answer");
                 }
                 return context.previous_answer;
+            case 'e':
+
             default:
                 throw Error(`Don't recognize "${root.name}" symbol`);
         }
