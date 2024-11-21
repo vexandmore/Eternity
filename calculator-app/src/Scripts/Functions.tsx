@@ -147,7 +147,7 @@ function reduce_to_2pi(x: number): number {
     } else if (x > (2 * PI)) {
         return x % (2*PI);
     } else {
-        return (2 * PI) - (abs(x) % (2 * PI));
+        return (2 * PI) + (x % (2 * PI));
     }
 }
 
@@ -161,7 +161,9 @@ function convert_to_rad(x: number, units: Units): number {
 
 export function sin(x: number, units: Units, terms: number = 25) : number {
     x = convert_to_rad(x, units);
+    console.log("before reducing " + x);
     x = reduce_to_2pi(x);
+    console.log("After reducing " + x);
     let result: number = 0;
 
     for (let i = 0; i < terms; i++) {
@@ -181,11 +183,12 @@ export function sin(x: number, units: Units, terms: number = 25) : number {
 
 export function cos(x: number, units: Units, terms: number = 25): number {
     x = convert_to_rad(x, units);
-    return sin(x + (PI / 2.0), terms, Units.RAD);
+    x = x + (PI / 2.0);
+    return sin(x, Units.RAD, terms);
 }
 
 export function tan(x: number, units: Units, terms: number = 25): number {
-    return sin(x, terms, units) / cos(x, terms, units);
+    return sin(x, units, terms) / cos(x, units, terms);
 }
 
 // let sdArray: number[] = []; // Global array to store values
