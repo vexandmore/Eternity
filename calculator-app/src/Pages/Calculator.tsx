@@ -72,6 +72,8 @@ const Calculator: React.FC = () => {
         // Add the equation and result to history
         const newHistoryItem = { equation: input, result: strResult };
         setHistory([...history, newHistoryItem]);
+        // Prevent us from redoing beyond here
+        setHiddenHistory([]);
 
         setResult(strResult);
         setJustPressedEquals(true);
