@@ -42,7 +42,7 @@ function lnApprox(b: number): number {
         let result = term;
         let n = 2;
 
-        while (n < 20) {
+        while (n < 50) {
             term *= -x;
             result += term / n;
             n++;
@@ -60,7 +60,7 @@ export function eApprox(x: number): number {
     let term = 1.0;
     let i = 1;
 
-    while (i < 30) {
+    while (i < 50) {
         term *= x / i;
         result += term;
         i++;
