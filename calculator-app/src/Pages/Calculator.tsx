@@ -311,9 +311,9 @@ const Calculator: React.FC = () => {
         <Button label="-" dataKey="-" className="operator-button" onClick={() => handleButtonClick("-")} />
 
         {/* Sixth Row */}
-        <Button label="arccos(x)" dataKey="shift+c"  className={`transcendental-button ${"arccos(x)".length > 8 ? "long-text" : ""}`}  onClick={() => handleButtonClick("arccos(")} />
+        <Button label="arccos(x)" dataKey="shift+c"  className="transcendental-button long-text"  onClick={() => handleButtonClick("arccos(")} />
         <Button label="x^y" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("x^y")} />
-        <Button label="logb(x)" dataKey="l"  className={`transcendental-button ${"arccos(x)".length > 8 ? "long-text" : ""}`} onClick={() => handleButtonClick("logb(")} />
+        <Button label="logb(x)" dataKey="l"  className="transcendental-button long-text" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" dataKey="1" className="number-button" onClick={() => handleButtonClick("1")} />
         <Button label="2" dataKey="2" className="number-button" onClick={() => handleButtonClick("2")} />
         <Button label="3" dataKey="3" className="number-button" onClick={() => handleButtonClick("3")} />
@@ -321,7 +321,7 @@ const Calculator: React.FC = () => {
 
         {/* Seventh Row */}
         <Button label="mad"  dataKey="m" className="transcendental-button" onClick={() => handleButtonClick("mad(")} />
-        <Button label="sinh(x)" dataKey="shift+s"  className={`transcendental-button ${"arccos(x)".length > 8 ? "long-text" : ""}`} onClick={() => handleButtonClick("sinh(")} />
+        <Button label="sinh(x)" dataKey="shift+s"  className="transcendental-button long-text" onClick={() => handleButtonClick("sinh(")} />
         <Button label="σ" dataKey="shift+d" className="transcendental-button" onClick={() => handleButtonClick("sd()")} />
         <Button label="0" dataKey="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." dataKey="." className="number-button" onClick={() => handleButtonClick(".")} />
