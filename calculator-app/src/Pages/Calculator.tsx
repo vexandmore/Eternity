@@ -107,6 +107,7 @@ const Calculator: React.FC = () => {
         setResult("");
         setHistory([]);
         setHiddenHistory([]);
+        setParseError("");
     } else {
       let new_input;
       if (justPressedEquals) {

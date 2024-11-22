@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 **First, [install nodejs and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).**
@@ -6,6 +6,26 @@ Then:
 - `cd calculator-app`
 - `npm install` to install dependencies
 - `npm start`
+- If it doesn't open by itself, open it at [http://localhost:3000](http://localhost:3000)
+
+## Using it
+
+An equation can be entered with either the buttons or the keyboard, press enter or the `=`
+button to view the result. The ↶ ↷ buttons navigate through the history, and the
+← and → buttons move the cursor in the input window. C clears the current expression,
+and AC clears the expression and history. DEL deletes the character before the
+cursor, and ANS is equal to the previous expression.
+
+## Graphing
+To graph, enter a univariate equation with `x` as the variable, for instance
+`cos(x^2)`, and press the graph button in the right pane.
+
+## Data series
+Press the "+" button in the right pane to upload CSV files (which must have
+one data series in the first column) to the calculator. You can then select
+it in the bottom, and toggle between a view of the data in tabular form and
+a histogram by clicking the graph button in the top right button of the pane.
+
 
 ## Available Scripts
 
