@@ -12,6 +12,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {CalculatorContext, evaluate_custom} from "../Scripts/Evaluator";
+import {Units} from "../Scripts/Functions";
+import { parse } from "mathjs";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -27,6 +30,8 @@ interface ContentScreenProps {
   onAddSeries: () => void;
   onDragSeries: (seriesName: string) => void;
   graphFunction?: string | null;
+  units: Units;
+  history: { equation: string; result: string }[]
   onGraphButtonClick: () => void;
 }
 
@@ -37,6 +42,8 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
   onAddSeries,
   onDragSeries,
   graphFunction,
+  units,
+  history,
   onGraphButtonClick,
 }) => {
   const [showHistogram, setShowHistogram] = useState(false);
@@ -51,23 +58,45 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
       const numericKey = sampleItem
         ? Object.keys(sampleItem).find((key) => !isNaN(parseFloat(sampleItem[key])))
         : null;
-
+  
       if (!numericKey) {
         console.warn("No numeric column found in dataset.");
         return null;
       }
-
+  
       const values = selectedData.map((item) => parseFloat(item[numericKey])).filter((v) => !isNaN(v));
-      const frequencyMap = values.reduce((acc: Record<number, number>, value) => {
-        acc[value] = (acc[value] || 0) + 1;
-        return acc;
-      }, {});
-
-      const labels = Object.keys(frequencyMap).map((label) => label.toString());
-      const frequencies = Object.values(frequencyMap);
-
+  
+      if (values.length === 0) {
+        console.warn("No numeric values found in dataset.");
+        return null;
+      }
+  
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const n = values.length;
+      const binWidth = (max - min) / Math.sqrt(n);
+      const numBins = Math.ceil((max - min) / binWidth);
+  
+      const bins: { count: number; values: number[] }[] = Array.from(
+        { length: numBins },
+        () => ({ count: 0, values: [] })
+      );
+      const binEdges = Array.from({ length: numBins + 1 }, (_, i) => min + i * binWidth);
+  
+      values.forEach((value) => {
+        const binIndex = Math.min(
+          Math.floor((value - min) / binWidth),
+          bins.length - 1
+        );
+        bins[binIndex].count += 1;
+        bins[binIndex].values.push(value);
+      });
+  
+      const labels = binEdges.slice(0, -1).map((edge, i) => `${edge.toFixed(2)} - ${binEdges[i + 1].toFixed(2)}`);
+      const frequencies = bins.map((bin) => bin.count);
+  
       return {
-        labels: labels,
+        labels,
         datasets: [
           {
             label: "Frequency",
@@ -75,50 +104,45 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
             backgroundColor: "rgba(92, 179, 255, 0.6)",
             borderColor: "rgba(1, 1, 1, .7)",
             borderWidth: 1,
+            extraData: bins.map((bin) => bin.values),
           },
         ],
       };
     }
     return null;
   };
-
+  
+  
   // Generate graph data if a function is selected
   useEffect(() => {
     if (graphFunction && showGraph) {
-      const xValues = Array.from({ length: 21 }, (_, i) => i - 10); // Range -10 to 10
-      const yValues = xValues.map((x) => {
-        try {
-          switch (graphFunction) {
-            case "sin":
-              return Math.sin(x);
-            case "cos":
-              return Math.cos(x);
-            case "tan":
-              return Math.tan(x);
-            case "log":
-              return x > 0 ? Math.log(x) : NaN;
-            case "sqrt":
-              return x >= 0 ? Math.sqrt(x) : NaN;
-            default:
-              return 0;
-          }
-        } catch {
-          return NaN;
+      try{
+        const xValues = Array.from({ length: 201 }, (_, i) => i*0.1 - 10); // Range -10 to 10
+        const yValues = []; // Using an object for key-value pairs
+        let lastAnswer = (history.length > 0)? parseFloat(history[history.length - 1].result) : 0
+        for (let x of xValues) { // Iterate over values, not indexes
+          const temp_function = graphFunction.replace(/(?<![a-zA-Z])x(?![a-zA-Z])/g, x.toString());
+          let expression_tree = parse(temp_function);
+          yValues.push(evaluate_custom(expression_tree, new CalculatorContext(units, lastAnswer))); // Assign x as the key
         }
-      });
+        for(let i = 0; i < yValues.length; i++)
+          console.log(xValues[i], ":", yValues[i]);
 
-      setLineGraphData({
-        labels: xValues,
-        datasets: [
-          {
-            label: `${graphFunction} Graph`,
-            data: yValues,
-            borderColor: "rgba(92, 179, 255, 0.6)",
-
-            fill: false,
-          },
-        ],
-      });
+        setLineGraphData({
+          labels: xValues,  // Use your custom xValues array, which contains -10, -9.9, ..., 10
+          datasets: [
+            {
+              label: `${graphFunction} Graph`,
+              data: yValues,
+              borderColor: "rgba(92, 179, 255, 0.6)",
+              fill: false,
+              pointRadius: 0, // Hide the points
+            },
+          ],
+        });
+      }
+      catch {
+      }
     } else {
       setLineGraphData(null);
     }
@@ -182,7 +206,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
         )}
         {showHistogram && histogramData && selectedSeriesIndex !== null && (
         <div className="chart-container">
-          <Bar
+         <Bar
             data={histogramData}
             options={{
               responsive: true,
@@ -191,6 +215,20 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
                 title: {
                   display: true,
                   text: `${seriesList[selectedSeriesIndex].name} Histogram`,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (tooltipItem) => {
+                      const index = tooltipItem.dataIndex;
+                      const dataset = tooltipItem.dataset as any; // Explicitly cast dataset to any
+                      const frequency = dataset.data[index];
+                      const binValues = dataset.extraData?.[index] || []; // Safely access extraData
+                      return [
+                        `Frequency: ${frequency}`,
+                        `Values: ${binValues.join(", ")}`,
+                      ];
+                    },
+                  },
                 },
               },
             }}
@@ -201,7 +239,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
         {showGraph && lineGraphData && (
          <div className="chart-container">
           <Line
-            data={lineGraphData}
+            data = {lineGraphData}
             options={{
               responsive: true,
               plugins: {
@@ -209,8 +247,15 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
                 title: {
                   display: true,
                   text: `${graphFunction} Graph`,
-                },
+                }
               },
+              scales: {
+                x: {
+                  ticks:{
+                    display: false
+                  }
+                }
+              }
             }}
           />
           </div>

@@ -1,5 +1,7 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, log } from './Functions';
+import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, log, lnAppx, eApprox} from './Functions';
+import { parse } from "mathjs";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
 export class CalculatorContext {
     units: Units;
@@ -27,7 +29,13 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'divide':
                 return evaluate_custom(root.args[0], context) / evaluate_custom(root.args[1], context);
             case 'pow':
-                return powerFunction(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
+                // special case for e^x
+                let arg0 = root.args[0];
+                if (arg0 instanceof SymbolNode && arg0.name === "e") {
+                    return eApprox(evaluate_custom(root.args[1], context));
+                } else {
+                    return powerFunction(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
+                }
             case 'factorial':
                 return factorial(evaluate_custom(root.args[0], context));
             case 'unaryMinus':
@@ -41,7 +49,7 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
         switch (root.fn.name) {
             case 'acos':
                 return arcCos(evaluate_custom(root.args[0], context));
-            case 'SD':
+            case 'sd':
             // Evaluate each argument of SD and pass them as an array to the SD function
              const values = root.args.map(arg => evaluate_custom(arg, context));
             return SD(values);
@@ -50,15 +58,17 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'cos':
                 return cos(evaluate_custom(root.args[0], context), context.units);
             case 'tan':
-                return tan(evaluate_custom(root.args[0], context), context.units);
-            case 'log':
+                return tan(evaluate_custom(root.args[0], context), context.units); 
+            case 'logb':
                 if (root.args.length === 2) {
-                    const base = evaluate_custom(root.args[1], context);
-                    const arg = evaluate_custom(root.args[0], context);
-                    return log(arg, base); 
+                    const base = evaluate_custom(root.args[1], context); // Pass context
+                    const arg = evaluate_custom(root.args[0], context);  // Pass context
+                    return log(arg, base);
                 } else {
-                    throw Error("Log function requires exactly two arguments: log(x, base)");
-                }    
+                        throw Error("Log function requires exactly two arguments: log(x, base)");
+                }
+            case 'ln':
+                return lnAppx(evaluate_custom(root.args[0], context));
             case 'abs':
                 return abs(evaluate_custom(root.args[0], context));
             case 'sqrt':
@@ -67,7 +77,6 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
                 return nth_root(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
             case 'sinh':
                 return sinh(evaluate_custom(root.args[0], context));
-
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }
@@ -90,3 +99,17 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
     }
 }
 
+// Return the parsing error, or "" if no error
+export function makeErrorMessage(expr: string): string {
+    try {
+        // We parse, but don't care about the return value (we just case if it's successful)
+        parse(expr);
+        return "";
+    } catch(e) {
+        if (e instanceof SyntaxError) {
+            return makeMessage(expr, e);
+        } else {
+            return String(e);
+        }
+    }
+}
