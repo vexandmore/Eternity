@@ -285,7 +285,7 @@ const Calculator: React.FC = () => {
 
         {/* Third Row */}
         <Button label="√" dataKey="r" className="operator-button" onClick={() => handleButtonClick("√(")} />
-        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("√(")} />
+        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("ⁿ√(")} />
         <Button label="π" dataKey="p" className="operator-button" onClick={() => handleButtonClick("π")} />
         <Button label="(" dataKey="(" className="operator-button" onClick={() => handleButtonClick("(")} />
         <Button label=")" dataKey=")" className="operator-button" onClick={() => handleButtonClick(")")} />
