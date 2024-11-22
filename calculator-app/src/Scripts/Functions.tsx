@@ -192,7 +192,6 @@ export function SD(values: number[]): number {
     if (values.length === 0) {
         throw new Error("Array is empty. Add values before calculating SD.");
     }
-    //n = population size
     let n = values.length;
     let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
