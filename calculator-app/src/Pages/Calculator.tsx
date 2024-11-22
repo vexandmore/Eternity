@@ -4,12 +4,12 @@ import Button from "../Components/Button";
 import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History";
 import { parse } from "mathjs";
-import { evaluate_custom, CalculatorContext } from "../Scripts/Evaluator";
+import { evaluate_custom, CalculatorContext, makeErrorMessage } from "../Scripts/Evaluator";
 import { Units } from "../Scripts/Functions";
-import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 import "./Calculator.css";
 import Papa from "papaparse";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
 
@@ -80,83 +80,64 @@ const Calculator: React.FC = () => {
         setResult(strResult);
         setJustPressedEquals(true);
       } catch (error) {
-        console.log(error);
-        setParseError(String(error));
+        if (error instanceof SyntaxError) {
+          let errorMessage = makeMessage(input, error);
+          setParseError(errorMessage);
+        } else {
+          setParseError(String(error));
+        }
       }
     } else if (value === "C") {
       setInput("");
       setResult("");
       setParseError("");
     } else if (value === "DEL") {
-      // Handle delete within "SD()"
-      if (input.includes("sd(") && input.endsWith(")")) {
-        const start = input.indexOf("sd(") + 3; // Start index of the content within "SD("
-        const end = input.lastIndexOf(")");     // End index of the content within "SD("
-        const insideContent = input.slice(start, end);
-        
-        // If there's content inside "SD()", remove the last character of the content
-        if (insideContent) {
-          setInput(input.slice(0, start) + insideContent.slice(0, -1) + input.slice(end));
-        }
-      } else {
-        // Regular delete if not inside "SD()"
-
-        setInput(input.slice(0, -1));
+      let delIndex = (inputRef?.current?.selectionStart ?? input.length) - 1;
+      if (delIndex < 0) {
+        return;
       }
+      let newInput = input.slice(0, delIndex) + input.slice(delIndex + 1);
+      setInput(newInput);
+      setParseError(makeErrorMessage(newInput));
+      placeCursorAt(delIndex);
       // Make it so that after deleting, can continue editing (even if just pressed =)
       setJustPressedEquals(false);
-    } else if (value === "σ") {
-      // Check if "SD()" is already in the input to avoid duplicates
-      if (input.includes("sd()")) return;
-      setInput(input + "sd()"); // Add "SD()" with empty parentheses
+    } else if (value === "sd()") {
+      let newInput = input + "sd()"; // Add "SD()" with empty parentheses
+      setInput(newInput);
+      // Place cursor in the middle
+      placeCursorAt(newInput.length - 1);
     } else if (value === "AC") {
         setInput("");
         setResult("");
         setHistory([]);
+        setHiddenHistory([]);
+        setParseError("");
     } else {
-      let addIndex = 0;
-
-      // Check if input ends with "SD()" and insert the value inside the parentheses
-      if (input.endsWith("sd()")) {
-        // Insert value inside the parentheses, keeping commas within
-        const updatedInput = input.slice(0, -1) + value + ")";
-        setInput(updatedInput);
-      } else if (input.includes("sd(") && input.endsWith(")")) {
-        // Ensure commas are added correctly inside SD function
-        const end = input.lastIndexOf(")");     // End index of the content within "SD("
-        const updatedInput = input.slice(0, end) + value + input.slice(end);
-        setInput(updatedInput);
+      let new_input;
+      if (justPressedEquals) {
+        setResult(""); // If we just produced an answer, clear after next input into the field
+        setInput(value);
+        setJustPressedEquals(false);
+        new_input = value;
+        placeCursorAt(value.length);
       } else {
-        let new_input;
-        if (justPressedEquals) {
-          setResult(""); // If we just produced an answer, clear after next input into the field
-          setInput(value);
-          setJustPressedEquals(false);
-          new_input = value;
-        } else {
-          let addIndex = inputRef?.current?.selectionStart ?? input.length;
-          new_input = input.slice(0, addIndex) + value + input.slice(addIndex);
-          addIndex = addIndex + value.length;
-          setTimeout(() => {
-            inputRef?.current?.focus();
-            inputRef?.current?.setSelectionRange(addIndex, addIndex);
-          }, 100);
-        }
-        try {
-          // We parse, but don't care about the return value (we just case if it's successful)
-          parse(new_input);
-          setParseError("");
-        } catch(e) {
-          if (e instanceof SyntaxError) {
-            setParseError(makeMessage(new_input, e));
-          } else {
-            setParseError(String(e));
-          }
-        }
-        setInput(new_input);
-      }    
+        let addIndex = inputRef?.current?.selectionStart ?? input.length;
+        new_input = input.slice(0, addIndex) + value + input.slice(addIndex);
+        addIndex = addIndex + value.length;
+        placeCursorAt(addIndex);
+      }
+      setParseError(makeErrorMessage(new_input));
+      setInput(new_input);    
     }
   };
+
+  const placeCursorAt = (index: number) => {
+    setTimeout(() => {
+            inputRef?.current?.focus();
+            inputRef?.current?.setSelectionRange(index, index);
+    }, 100);
+  }
 
   const undo = () => {
     if (history.length === 0) {
@@ -274,6 +255,7 @@ const Calculator: React.FC = () => {
   
   const handleInputChange = (newInput: string) => {
     setInput(newInput);
+    setParseError(makeErrorMessage(newInput));
   };
 
 
@@ -293,12 +275,10 @@ const Calculator: React.FC = () => {
       const display = document.querySelector(`input[class="display-input"]`);
       if (button && (display as HTMLInputElement) !== document.activeElement) {
         (button as HTMLButtonElement).click(); // Simulate button click
-        const display = document.querySelector(`input[class="display-input"]`);
       }
       else if(key === "Enter")
       {
         (button as HTMLButtonElement).click(); // Simulate button click
-        const display = document.querySelector(`input[class="display-input"]`);
       }
     };
     const display = document.querySelector(`input[class="display-input"]`);
