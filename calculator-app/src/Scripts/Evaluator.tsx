@@ -47,7 +47,7 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
         }
     } else if (root instanceof FunctionNode) {
         switch (root.fn.name) {
-            case 'acos':
+            case 'arccos':
                 return arcCos(evaluate_custom(root.args[0], context));
             case 'sd':
             // Evaluate each argument of SD and pass them as an array to the SD function

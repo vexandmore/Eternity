@@ -314,7 +314,7 @@ const Calculator: React.FC = () => {
 
         {/* <Button label="deg"  className={units === Units.DEG ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
         <Button label="rad"  className={units === Units.RAD ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.RAD)} /> */}
-        <Button label="∧" dataKey="^" className="operator-button" onClick={() => handleButtonClick("^")} />
+        <Button label="x" dataKey="x" className="operator-button" onClick={() => handleButtonClick("x")} />
         <Button label="↶" className="operator-button" onClick={() => undo()} />
         <Button label="↷" className="operator-button" onClick={() => redo()} />
         <Button label="AC" dataKey="shift+Delete" className="operator-button" onClick={() => handleButtonClick("AC")} />
@@ -358,7 +358,7 @@ const Calculator: React.FC = () => {
 
         {/* Sixth Row */}
         <Button label="arccos(x)" dataKey="shift+c"  className="transcendental-button long-text"  onClick={() => handleButtonClick("arccos(")} />
-        <Button label="x^y" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("x^y")} />
+        <Button label="x^y" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("^(")} />
         <Button label="logb(x)" dataKey="l"  className="transcendental-button long-text" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" dataKey="1" className="number-button" onClick={() => handleButtonClick("1")} />
         <Button label="2" dataKey="2" className="number-button" onClick={() => handleButtonClick("2")} />
