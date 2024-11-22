@@ -1,4 +1,4 @@
-import {arcCos, sqrt, powerFunction, sinh, SD} from './Functions'
+import {arcCos, sqrt, powerFunction, sinh, SD, log} from './Functions'
 
 it('test sqrt', () => {
     expect(sqrt(2)).toBeCloseTo(1.41421356237, 11);
@@ -33,4 +33,7 @@ it('test sinh', () => {
 
 it('test SD', () => {
     expect(SD([10, 12, 23, 23, 16, 23, 21, 16])).toBeCloseTo(5.2372293, 6);
+    expect(SD([2, 4, 6, 7, 11, 10, 20])).toBeCloseTo(5.9401779675119, 6);
 });
+
+

@@ -211,7 +211,7 @@ export function SD(values: number[]): number {
     let n = values.length;
     let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
-    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n;
+    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / (n - 1);
     let sd = Math.sqrt(variance);
     return sd;
 }
