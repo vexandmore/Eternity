@@ -197,35 +197,29 @@ export function tan(x: number, units: Units, terms: number = 25): number {
     return sin(x, units, terms) / cos(x, units, terms);
 }
 
-// let sdArray: number[] = []; // Global array to store values
 
-// export function addValue(value: number): void {
-//     // Add the new value to sdArray
-//     sdArray.push(value);
-// }
 export function SD(values: number[]): number {
     if (values.length === 0) {
         throw new Error("Array is empty. Add values before calculating SD.");
     }
-    //n = population size
     let n = values.length;
     let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
-    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / (n - 1);
+    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n-1;
     let sd = Math.sqrt(variance);
     return sd;
 }
 
 
   
-export function logBase(x: number, b: number, terms: number = 100): number {
+export function log(x: number, b: number, terms: number = 100): number {
     if (x <= 0 || b <= 0) {
         throw new Error("logBase is undefined for x <= 0 or b <= 0");
     }
     if (b === 1) {
         throw new Error("logBase is undefined for b = 1");
     }
-    // Calculate ln(x) and ln(b) using Taylor series approximation
+    //taylor series approximation
     const lnX = lnAppx(x, terms);
     const lnB = lnAppx(b, terms);
     // log_b(x) = ln(x) / ln(b)
@@ -240,11 +234,11 @@ export function lnAppx(x: number, terms: number = 100): number {
     if (x === 1) {
         return 0.0;
     }
-    // Use the transformation ln(x) = -ln(1/x) for x < 1 for better convergence
+    //ln(x) = -ln(1/x) for x < 1 for better convergence
     if (x < 1) {
         return -lnAppx(1 / x, terms);
     }
-    // Use the series ln(x) = 2 * Σ [((x - 1) / (x + 1))^(2n - 1) / (2n - 1)]
+    //ln(x) = 2 * Σ [((x - 1) / (x + 1))^(2n - 1) / (2n - 1)]
     const z = (x - 1) / (x + 1);
     const zSquared = z * z;
     let result = 0.0;

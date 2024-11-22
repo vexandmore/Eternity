@@ -3,6 +3,7 @@ import Display from "../Components/Display";
 import Button from "../Components/Button";
 import ContentScreen from "../Components/ContentScreen";
 import History from "../Components/History";
+import ToggleButton from "../Components/ToggleButton";
 import { parse } from "mathjs";
 import { evaluate_custom, CalculatorContext, makeErrorMessage } from "../Scripts/Evaluator";
 import { Units } from "../Scripts/Functions";
@@ -307,10 +308,13 @@ const Calculator: React.FC = () => {
     </div>
      <div className="main-content">
         <div className="buttons">
-          
-        <Button label="deg"  className={units === Units.DEG ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
-        <Button label="rad"  className={units === Units.RAD ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.RAD)} />
-        <Button label="∧" dataKey="^" className="operator-button" onClick={() => handleButtonClick("^")} />
+        <ToggleButton units={units === Units.DEG ? "DEG" : "RAD"} // Pass current units
+         setUnits={(newUnits) => setUnits(newUnits === "DEG" ? Units.DEG : Units.RAD)  } // Handle unit changes 
+         />
+
+        {/* <Button label="deg"  className={units === Units.DEG ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.DEG)} />
+        <Button label="rad"  className={units === Units.RAD ? "selected-units-button" : "operator-button"} onClick={() => setUnits(Units.RAD)} /> */}
+        <Button label="x" dataKey="x" className="operator-button" onClick={() => handleButtonClick("x")} />
         <Button label="↶" className="operator-button" onClick={() => undo()} />
         <Button label="↷" className="operator-button" onClick={() => redo()} />
         <Button label="AC" dataKey="shift+Delete" className="operator-button" onClick={() => handleButtonClick("AC")} />
@@ -353,9 +357,9 @@ const Calculator: React.FC = () => {
         <Button label="-" dataKey="-" className="operator-button" onClick={() => handleButtonClick("-")} />
 
         {/* Sixth Row */}
-        <Button label="arccos(x)" dataKey="shift+c" className="transcendental-button" onClick={() => handleButtonClick("arccos(")} />
-        <Button label="^" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("^")} />
-        <Button label="logb(x)" dataKey="l" className="transcendental-button" onClick={() => handleButtonClick("logb(")} />
+        <Button label="arccos(x)" dataKey="shift+c"  className="transcendental-button long-text"  onClick={() => handleButtonClick("arccos(")} />
+        <Button label="x^y" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("^(")} />
+        <Button label="logb(x)" dataKey="l"  className="transcendental-button long-text" onClick={() => handleButtonClick("logb(")} />
         <Button label="1" dataKey="1" className="number-button" onClick={() => handleButtonClick("1")} />
         <Button label="2" dataKey="2" className="number-button" onClick={() => handleButtonClick("2")} />
         <Button label="3" dataKey="3" className="number-button" onClick={() => handleButtonClick("3")} />
@@ -363,7 +367,7 @@ const Calculator: React.FC = () => {
 
         {/* Seventh Row */}
         <Button label="mad"  dataKey="m" className="transcendental-button" onClick={() => handleButtonClick("mad(")} />
-        <Button label="sinh(x)" dataKey="shift+s" className="transcendental-button" onClick={() => handleButtonClick("sinh(")} />
+        <Button label="sinh(x)" dataKey="shift+s"  className="transcendental-button long-text" onClick={() => handleButtonClick("sinh(")} />
         <Button label="σ" dataKey="shift+d" className="transcendental-button" onClick={() => handleButtonClick("sd()")} />
         <Button label="0" dataKey="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." dataKey="." className="number-button" onClick={() => handleButtonClick(".")} />
