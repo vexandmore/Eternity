@@ -26,6 +26,10 @@ one data series in the first column) to the calculator. You can then select
 it in the bottom, and toggle between a view of the data in tabular form and
 a histogram by clicking the graph button in the top right button of the pane.
 
+Once a data series is imported, it can be dragged into the input window to 
+be pasted there, for instance to be used as an argument to a call to 
+standard deviation.
+
 
 ## Available Scripts
 
