@@ -1,4 +1,9 @@
-import {arcCos} from './Functions'
+import {arcCos, sqrt} from './Functions'
+
+it('test sqrt', () => {
+    expect(sqrt(2)).toBeCloseTo(1.41421356237, 11);
+    expect(sqrt(3)).toBeCloseTo(1.73205080757, 11);
+})
 
 it('test arccosine', () => {
     expect(arcCos(0)).toBeCloseTo(1.5707963, 6);
