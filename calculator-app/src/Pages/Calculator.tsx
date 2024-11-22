@@ -9,6 +9,7 @@ import { Units } from "../Scripts/Functions";
 import "./Calculator.css";
 import Papa from "papaparse";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
 
@@ -79,8 +80,12 @@ const Calculator: React.FC = () => {
         setResult(strResult);
         setJustPressedEquals(true);
       } catch (error) {
-        console.log(error);
-        setParseError(String(error));
+        if (error instanceof SyntaxError) {
+          let errorMessage = makeMessage(input, error);
+          setParseError(errorMessage);
+        } else {
+          setParseError(String(error));
+        }
       }
     } else if (value === "C") {
       setInput("");
