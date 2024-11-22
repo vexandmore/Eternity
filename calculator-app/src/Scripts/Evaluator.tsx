@@ -1,6 +1,8 @@
 
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
 import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, logBase, lnAppx, eApprox} from './Functions';
+import { parse } from "mathjs";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
 export class CalculatorContext {
     units: Units;
@@ -100,3 +102,17 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
     }
 }
 
+// Return the parsing error, or "" if no error
+export function makeErrorMessage(expr: string): string {
+    try {
+        // We parse, but don't care about the return value (we just case if it's successful)
+        parse(expr);
+        return "";
+    } catch(e) {
+        if (e instanceof SyntaxError) {
+            return makeMessage(expr, e);
+        } else {
+            return String(e);
+        }
+    }
+}
