@@ -1,6 +1,5 @@
-
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, logBase, lnAppx, eApprox} from './Functions';
+import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, log, lnAppx, eApprox} from './Functions';
 import { parse } from "mathjs";
 import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
@@ -60,11 +59,11 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
                 return cos(evaluate_custom(root.args[0], context), context.units);
             case 'tan':
                 return tan(evaluate_custom(root.args[0], context), context.units); 
-            case 'log':
+            case 'logb':
                 if (root.args.length === 2) {
                     const base = evaluate_custom(root.args[1], context); // Pass context
                     const arg = evaluate_custom(root.args[0], context);  // Pass context
-                    return logBase(arg, base);
+                    return log(arg, base);
                 } else {
                         throw Error("Log function requires exactly two arguments: log(x, base)");
                 }
