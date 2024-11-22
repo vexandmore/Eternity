@@ -1,8 +1,14 @@
-import {arcCos, sqrt, powerFunction, sinh, SD, log} from './Functions'
+import {arcCos, sqrt, powerFunction, sinh, SD, log, cos, nth_root} from './Functions'
+import { Units } from "../Scripts/Functions";
 
 it('test sqrt', () => {
     expect(sqrt(2)).toBeCloseTo(1.41421356237, 11);
     expect(sqrt(3)).toBeCloseTo(1.73205080757, 11);
+})
+
+it('test nth root', () => {
+    expect(nth_root(3, 8)).toBeCloseTo(2, 6);
+    expect(nth_root(5, 12)).toBeCloseTo(1.64375183, 6);
 })
 
 it('test arccosine', () => {
@@ -18,6 +24,11 @@ it('test arccosine', () => {
     expect(arcCos(0.9)).toBeCloseTo(0.4510268, 6);
     expect(arcCos(1.0)).toBeCloseTo(0, 6);
 });
+
+it('test arccos is inverse of cos', () => {
+    expect(arcCos(cos(1.5, Units.RAD))).toBeCloseTo(1.5, 6);
+    expect(arcCos(cos(1.0, Units.RAD))).toBeCloseTo(1.0, 6);
+})
 
 it('test power', () => {
     expect(powerFunction(2, 3)).toBeCloseTo(8, 6);
@@ -36,4 +47,7 @@ it('test SD', () => {
     expect(SD([2, 4, 6, 7, 11, 10, 20])).toBeCloseTo(5.9401779675119, 6);
 });
 
-
+it('test log', () => {
+    expect(log(15, 10)).toBeCloseTo(1.176091259, 6);
+    expect(log(20, 2)).toBeCloseTo(4.321928095, 6);
+});

@@ -167,9 +167,7 @@ function convert_to_rad(x: number, units: Units): number {
 
 export function sin(x: number, units: Units, terms: number = 25) : number {
     x = convert_to_rad(x, units);
-    console.log("before reducing " + x);
     x = reduce_to_2pi(x);
-    console.log("After reducing " + x);
     let result: number = 0;
 
     for (let i = 0; i < terms; i++) {
@@ -205,7 +203,7 @@ export function SD(values: number[]): number {
     let n = values.length;
     let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
-    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n-1;
+    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / (n-1);
     let sd = Math.sqrt(variance);
     return sd;
 }
