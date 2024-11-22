@@ -58,23 +58,45 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
       const numericKey = sampleItem
         ? Object.keys(sampleItem).find((key) => !isNaN(parseFloat(sampleItem[key])))
         : null;
-
+  
       if (!numericKey) {
         console.warn("No numeric column found in dataset.");
         return null;
       }
-
+  
       const values = selectedData.map((item) => parseFloat(item[numericKey])).filter((v) => !isNaN(v));
-      const frequencyMap = values.reduce((acc: Record<number, number>, value) => {
-        acc[value] = (acc[value] || 0) + 1;
-        return acc;
-      }, {});
-
-      const labels = Object.keys(frequencyMap).map((label) => label.toString());
-      const frequencies = Object.values(frequencyMap);
-
+  
+      if (values.length === 0) {
+        console.warn("No numeric values found in dataset.");
+        return null;
+      }
+  
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const n = values.length;
+      const binWidth = (max - min) / Math.sqrt(n);
+      const numBins = Math.ceil((max - min) / binWidth);
+  
+      const bins: { count: number; values: number[] }[] = Array.from(
+        { length: numBins },
+        () => ({ count: 0, values: [] })
+      );
+      const binEdges = Array.from({ length: numBins + 1 }, (_, i) => min + i * binWidth);
+  
+      values.forEach((value) => {
+        const binIndex = Math.min(
+          Math.floor((value - min) / binWidth),
+          bins.length - 1
+        );
+        bins[binIndex].count += 1;
+        bins[binIndex].values.push(value);
+      });
+  
+      const labels = binEdges.slice(0, -1).map((edge, i) => `${edge.toFixed(2)} - ${binEdges[i + 1].toFixed(2)}`);
+      const frequencies = bins.map((bin) => bin.count);
+  
       return {
-        labels: labels,
+        labels,
         datasets: [
           {
             label: "Frequency",
@@ -82,13 +104,15 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
             backgroundColor: "rgba(92, 179, 255, 0.6)",
             borderColor: "rgba(1, 1, 1, .7)",
             borderWidth: 1,
+            extraData: bins.map((bin) => bin.values),
           },
         ],
       };
     }
     return null;
   };
-
+  
+  
   // Generate graph data if a function is selected
   useEffect(() => {
     if (graphFunction && showGraph) {
@@ -182,7 +206,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
         )}
         {showHistogram && histogramData && selectedSeriesIndex !== null && (
         <div className="chart-container">
-          <Bar
+         <Bar
             data={histogramData}
             options={{
               responsive: true,
@@ -191,6 +215,20 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
                 title: {
                   display: true,
                   text: `${seriesList[selectedSeriesIndex].name} Histogram`,
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (tooltipItem) => {
+                      const index = tooltipItem.dataIndex;
+                      const dataset = tooltipItem.dataset as any; // Explicitly cast dataset to any
+                      const frequency = dataset.data[index];
+                      const binValues = dataset.extraData?.[index] || []; // Safely access extraData
+                      return [
+                        `Frequency: ${frequency}`,
+                        `Values: ${binValues.join(", ")}`,
+                      ];
+                    },
+                  },
                 },
               },
             }}
