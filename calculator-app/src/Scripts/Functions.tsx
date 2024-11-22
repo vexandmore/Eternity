@@ -197,21 +197,15 @@ export function tan(x: number, units: Units, terms: number = 25): number {
     return sin(x, units, terms) / cos(x, units, terms);
 }
 
-// let sdArray: number[] = []; // Global array to store values
 
-// export function addValue(value: number): void {
-//     // Add the new value to sdArray
-//     sdArray.push(value);
-// }
 export function SD(values: number[]): number {
     if (values.length === 0) {
         throw new Error("Array is empty. Add values before calculating SD.");
     }
-    //n = population size
     let n = values.length;
     let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
-    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n;
+    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n-1;
     let sd = Math.sqrt(variance);
     return sd;
 }
