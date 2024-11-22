@@ -268,7 +268,5 @@ export function MAD(values: number[]): number {
 
     const absoluteDeviations: number[] = values.map((value: number) => Math.abs(value - mean));
 
-    return Math.round(
-        absoluteDeviations.reduce((acc: number, val: number) => acc + val, 0) / values.length
-    );
+    return absoluteDeviations.reduce((acc: number, val: number) => acc + val, 0) / values.length;
 }
