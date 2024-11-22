@@ -1,6 +1,8 @@
 
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
 import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, MAD, sqrt, abs, Units, nth_root, logBase, lnAppx, eApprox} from './Functions';
+import { parse } from "mathjs";
+import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
 export class CalculatorContext {
     units: Units;
@@ -30,7 +32,7 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'pow':
                 // special case for e^x
                 let arg0 = root.args[0];
-                if (arg0 instanceof SymbolNode && arg0.name == "e") {
+                if (arg0 instanceof SymbolNode && arg0.name === "e") {
                     return eApprox(evaluate_custom(root.args[1], context));
                 } else {
                     return powerFunction(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
@@ -91,8 +93,6 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
                     throw Error("Can't use ANS if have no previous answer");
                 }
                 return context.previous_answer;
-            case 'e':
-
             default:
                 throw Error(`Don't recognize "${root.name}" symbol`);
         }
@@ -103,3 +103,17 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
     }
 }
 
+// Return the parsing error, or "" if no error
+export function makeErrorMessage(expr: string): string {
+    try {
+        // We parse, but don't care about the return value (we just case if it's successful)
+        parse(expr);
+        return "";
+    } catch(e) {
+        if (e instanceof SyntaxError) {
+            return makeMessage(expr, e);
+        } else {
+            return String(e);
+        }
+    }
+}

@@ -121,8 +121,14 @@ export function factorial(n: number): number {
     return n * factorial(n - 1);
 }
 
-export function sqrt(n: number): number {
-    return powerFunction(n, 1/2.0);
+// Since this is used in arc cosine, implement
+// special case to get more accuracy.
+export function sqrt(n: number, iterations: number = 50): number {
+    let guess = 1.0;
+    for (let i = 0; i < iterations; i++) {
+        guess = 1/2 * (guess + (n / guess));
+    }
+    return guess;
 }
 
 export function nth_root(nth: number, n: number) {
