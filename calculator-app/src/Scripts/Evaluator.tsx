@@ -1,5 +1,5 @@
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, log, lnAppx, eApprox} from './Functions';
+import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, MAD, sqrt, abs, Units, nth_root, log, lnAppx, eApprox} from './Functions';
 import { parse } from "mathjs";
 import { makeMessage } from "../Scripts/ParseErrorInterpreter";
 
@@ -53,6 +53,9 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             // Evaluate each argument of SD and pass them as an array to the SD function
              const values = root.args.map(arg => evaluate_custom(arg, context));
             return SD(values);
+            case 'mad':
+                const valuesForMad = root.args.map(arg => evaluate_custom(arg, context));
+                return MAD(valuesForMad);
             case 'sin':
                 return sin(evaluate_custom(root.args[0], context), context.units);
             case 'cos':

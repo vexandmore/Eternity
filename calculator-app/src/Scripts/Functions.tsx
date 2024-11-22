@@ -257,3 +257,15 @@ export function sinh(x: number): number {
     const expNegX = eApprox(-x);
     return (expX - expNegX) / 2;
 }
+
+export function MAD(values: number[]): number {
+    if (values.length === 0) {
+        throw new Error("Array is empty. Add values before calculating MAD.");
+    }
+
+    const mean: number = values.reduce((acc: number, val: number) => acc + val, 0) / values.length;
+
+    const absoluteDeviations: number[] = values.map((value: number) => Math.abs(value - mean));
+
+    return absoluteDeviations.reduce((acc: number, val: number) => acc + val, 0) / values.length;
+}
