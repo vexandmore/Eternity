@@ -277,16 +277,16 @@ const Calculator: React.FC = () => {
         {/* Second Row */}
         <Button label="a²" dataKey="shift+p" className="operator-button" onClick={() => handleButtonClick("^2")} />
         <Button label="x!" dataKey="!" className="operator-button" onClick={() => handleButtonClick("!")} />
-        <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
+        <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("| |(")} />
         <Button label="←"  className="operator-button" onClick={() => handleButtonClick("BACK")} />
         <Button label="→"  className="operator-button" onClick={() => handleButtonClick("FORWARD")} />
         <Button label="DEL" dataKey="Backspace" className="operator-button" onClick={() => handleButtonClick("DEL")} />
         <Button label="ANS" dataKey="a" className="operator-button" onClick={() => handleButtonClick("ANS")} />
 
         {/* Third Row */}
-        <Button label="√" dataKey="r" className="operator-button" onClick={() => handleButtonClick("sqrt(")} />
-        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("root(")} />
-        <Button label="π" dataKey="p" className="operator-button" onClick={() => handleButtonClick("pi")} />
+        <Button label="√" dataKey="r" className="operator-button" onClick={() => handleButtonClick("√(")} />
+        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("√(")} />
+        <Button label="π" dataKey="p" className="operator-button" onClick={() => handleButtonClick("π")} />
         <Button label="(" dataKey="(" className="operator-button" onClick={() => handleButtonClick("(")} />
         <Button label=")" dataKey=")" className="operator-button" onClick={() => handleButtonClick(")")} />
         <Button label="," dataKey="," className="operator-button" onClick={() => handleButtonClick(",")} />
