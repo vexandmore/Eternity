@@ -184,14 +184,14 @@ export function SD(values: number[]): number {
 
 
   
-export function logBase(x: number, b: number, terms: number = 100): number {
+export function log(x: number, b: number, terms: number = 100): number {
     if (x <= 0 || b <= 0) {
         throw new Error("logBase is undefined for x <= 0 or b <= 0");
     }
     if (b === 1) {
         throw new Error("logBase is undefined for b = 1");
     }
-    // Calculate ln(x) and ln(b) using Taylor series approximation
+    //taylor series approximation
     const lnX = lnAppx(x, terms);
     const lnB = lnAppx(b, terms);
     // log_b(x) = ln(x) / ln(b)
@@ -205,11 +205,11 @@ function lnAppx(x: number, terms: number = 100): number {
     if (x === 1) {
         return 0.0;
     }
-    // Use the transformation ln(x) = -ln(1/x) for x < 1 for better convergence
+    //ln(x) = -ln(1/x) for x < 1 for better convergence
     if (x < 1) {
         return -lnAppx(1 / x, terms);
     }
-    // Use the series ln(x) = 2 * Σ [((x - 1) / (x + 1))^(2n - 1) / (2n - 1)]
+    //ln(x) = 2 * Σ [((x - 1) / (x + 1))^(2n - 1) / (2n - 1)]
     const z = (x - 1) / (x + 1);
     const zSquared = z * z;
     let result = 0.0;

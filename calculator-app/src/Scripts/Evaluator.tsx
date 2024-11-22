@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode} from 'mathjs';
-import { arcCos, powerFunction, sin, SD, logBase } from './Functions';
-=======
 import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, SymbolNode} from 'mathjs';
-import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root } from './Functions';
->>>>>>> 2381377ba5b9644c6cc638fda5813f56b93934cd
+import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, sqrt, abs, Units, nth_root, log } from './Functions';
 
 export class CalculatorContext {
     units: Units;
@@ -55,18 +50,15 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'cos':
                 return cos(evaluate_custom(root.args[0], context), context.units);
             case 'tan':
-<<<<<<< HEAD
-                return Math.tan(evaluate_custom(root.args[0]));    
+                return tan(evaluate_custom(root.args[0], context), context.units);
             case 'log':
                 if (root.args.length === 2) {
-                    const base = evaluate_custom(root.args[1]);
-                    const arg = evaluate_custom(root.args[0]);
-                    return logBase(arg, base);
+                    const base = evaluate_custom(root.args[1], context);
+                    const arg = evaluate_custom(root.args[0], context);
+                    return log(arg, base); 
                 } else {
                     throw Error("Log function requires exactly two arguments: log(x, base)");
-                }
-=======
-                return tan(evaluate_custom(root.args[0], context), context.units);
+                }    
             case 'abs':
                 return abs(evaluate_custom(root.args[0], context));
             case 'sqrt':
@@ -75,7 +67,7 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
                 return nth_root(evaluate_custom(root.args[0], context), evaluate_custom(root.args[1], context));
             case 'sinh':
                 return sinh(evaluate_custom(root.args[0], context));
->>>>>>> 2381377ba5b9644c6cc638fda5813f56b93934cd
+
             default:
                 throw Error(`Don't recognize "${root.fn}" function`);
         }
