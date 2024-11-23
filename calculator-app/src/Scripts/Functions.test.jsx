@@ -1,4 +1,4 @@
-import {arcCos, sqrt, powerFunction, sinh, SD, log, cos, nth_root} from './Functions'
+import {arcCos, sqrt, powerFunction, sinh, SD, log, cos, nth_root, MAD} from './Functions'
 import { Units } from "../Scripts/Functions";
 
 it('test sqrt', () => {
@@ -45,6 +45,11 @@ it('test sinh', () => {
 it('test SD', () => {
     expect(SD([10, 12, 23, 23, 16, 23, 21, 16])).toBeCloseTo(5.2372293, 6);
     expect(SD([2, 4, 6, 7, 11, 10, 20])).toBeCloseTo(5.9401779675119, 6);
+});
+
+it('test MAD', () => {
+    expect(MAD([1, 2, 3, 4, 5, 6, 8])).toBeCloseTo(1.8775510, 6);
+    expect(MAD([13,45,45,65,102,562])).toBeCloseTo(141.1111111, 6);
 });
 
 it('test log', () => {
