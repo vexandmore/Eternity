@@ -1,7 +1,7 @@
 # Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-**First, [install nodejs and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).**
+**First, [install nodejs and npm](https://nodejs.org/en/download/prebuilt-installer/current).**
 Then:
 - `cd calculator-app`
 - `npm install` to install dependencies
@@ -11,10 +11,33 @@ Then:
 ## Using it
 
 An equation can be entered with either the buttons or the keyboard, press enter or the `=`
-button to view the result. The ↶ ↷ buttons navigate through the history, and the
-← and → buttons move the cursor in the input window. C clears the current expression,
-and AC clears the expression and history. DEL deletes the character before the
-cursor, and ANS is equal to the previous expression.
+button to view the result.
+Most buttons simply add the given symbol or function to the input window.
+The following is a description of the other buttons:
+- DEG/RAD allow the unit for the trigonometric functions (sin, cos, tan) to be selected
+- x adds an "x", as in a variable. Necessary for function graphing.
+- ↶ ↷ navigate through the history
+- AC clears the current expression and the history
+- C clears the current expression
+- ← and → move the cursor in the input window
+- DEL deletes the character before the
+- ANS is equal to the previous expression
+
+The transcendental functions are as follows:
+- `arccos(x)` is the inverse of the cosine function. It
+outputs in whatever unit is specified (degrees or radians)
+- `x^y` is the exponential function
+- `logb(x)` is the logarithm, in any base. The argument
+list is:
+    - The number you want the log of
+    - The base of the logarithm
+- `mad` is the mean absolute difference. Enter the numbers
+with commas separating them, or a data series
+- `sinh(x)` is the hyperbolic sine function
+- `σ` is the standard deviation of a **sample**.
+Enter the samples with commas beteween them,
+or a data series.
+
 
 ## Graphing
 To graph, enter a univariate equation with `x` as the variable, for instance
