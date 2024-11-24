@@ -2,14 +2,27 @@ import {MathNode, ConstantNode, FunctionNode, OperatorNode, ParenthesisNode, Sym
 import { factorial, arcCos, powerFunction, sin, sinh, cos, tan, PI, SD, MAD, sqrt, abs, Units, nth_root, log, lnAppx, eApprox} from './Functions';
 import { parse } from "mathjs";
 import { makeMessage } from "../Scripts/ParseErrorInterpreter";
+import { DataSeries } from "../Pages/Calculator";
 
 export class CalculatorContext {
     units: Units;
     previous_answer: number;
+    data_series: DataSeries[];
 
-    constructor(units: Units, previous_answer: number) {
+    constructor(units: Units, previous_answer: number, data_series: DataSeries[]) {
         this.units = units;
         this.previous_answer = previous_answer;
+        this.data_series = data_series;
+    }
+}
+
+function getDataSeries(context: CalculatorContext, name: string): number[] {
+    let dataSeries = context.data_series;
+    let matchingSeries = dataSeries.filter((val) => val.name === name);
+    if (matchingSeries.length > 0) {
+        return matchingSeries[0].data.map((val) => parseFloat(val['0']));
+    } else {
+        throw Error(`No data series with name ${name}`);
     }
 }
 
@@ -50,12 +63,27 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'arccos':
                 return arcCos(evaluate_custom(root.args[0], context), context.units);
             case 'sd':
-            // Evaluate each argument of SD and pass them as an array to the SD function
-             const values = root.args.map(arg => evaluate_custom(arg, context));
-            return SD(values);
+                if (root.args[0] instanceof SymbolNode) {
+                    // Have a data series
+                    let seriesName = root.args[0].name;
+                    let dataSeries = getDataSeries(context, seriesName);
+                    return SD(dataSeries);
+                } else {
+                    // Evaluate each argument of SD and pass them as an array to the SD function
+                    const values = root.args.map(arg => evaluate_custom(arg, context));
+                    return SD(values);
+                }
             case 'mad':
-                const valuesForMad = root.args.map(arg => evaluate_custom(arg, context));
-                return MAD(valuesForMad);
+                if (root.args[0] instanceof SymbolNode) {
+                    // Have a data series
+                    let seriesName = root.args[0].name;
+                    let dataSeries = getDataSeries(context, seriesName);
+                    return MAD(dataSeries);
+                } else {
+                    // Evaluate each argument of SD and pass them as an array to the SD function
+                    const values = root.args.map(arg => evaluate_custom(arg, context));
+                    return MAD(values);
+                }
             case 'sin':
                 return sin(evaluate_custom(root.args[0], context), context.units);
             case 'cos':

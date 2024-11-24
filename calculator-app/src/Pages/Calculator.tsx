@@ -16,7 +16,7 @@ ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend
 
 
 
-interface DataSeries {
+export interface DataSeries {
   name: string;
   data: any[];
 }
@@ -66,7 +66,7 @@ const Calculator: React.FC = () => {
         } else {
           lastAnswer = parseFloat(history[history.length - 1].result);
         }
-        let context = new CalculatorContext(units, lastAnswer);
+        let context = new CalculatorContext(units, lastAnswer, seriesList);
         // Use mathjs to parse into tree
         let expression_tree = parse(input);
         let evaluatedResult = evaluate_custom(expression_tree, context);
@@ -122,20 +122,27 @@ const Calculator: React.FC = () => {
         } else {
           placeCursorAt(value.length);
         }
+        setInput(new_input);
       } else {
-        let addIndex = inputRef?.current?.selectionStart ?? input.length;
-        new_input = input.slice(0, addIndex) + value + input.slice(addIndex);
-        addIndex = addIndex + value.length;
-        
-        if (value.endsWith("()")) {
-          placeCursorAt(addIndex - 1);
-        } else {
-          placeCursorAt(addIndex);
-        }
+        new_input = addTextAtCursor(value);
       }
       setParseError(makeErrorMessage(new_input));
-      setInput(new_input);
     }
+  };
+
+  // 
+  const addTextAtCursor = (text: string): string => {
+    let addIndex = inputRef?.current?.selectionStart ?? input.length;
+    let new_input = input.slice(0, addIndex) + text + input.slice(addIndex);
+    addIndex = addIndex + text.length;
+        
+    if (text.endsWith("()")) {
+      placeCursorAt(addIndex - 1);
+    } else {
+      placeCursorAt(addIndex);
+    }
+    setInput(new_input);
+    return new_input;
   };
 
   const placeCursorAt = (index: number) => {
@@ -203,7 +210,8 @@ const Calculator: React.FC = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension from the name
+      const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/ /g, "").replace(/\(|\)/g, ""); // Remove file extension from the name, remove parentheses, replace spaces with underscores
+
       const reader = new FileReader();
   
       reader.onload = (e) => {
@@ -242,17 +250,10 @@ const Calculator: React.FC = () => {
  
   const handleDropOnInput = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const seriesDataString = event.dataTransfer.getData("text/plain");
-    if (seriesDataString) {
+    const seriesName = event.dataTransfer.getData("text/plain");
+    if (seriesName) {
       try {
-        const seriesData = JSON.parse(seriesDataString);
-        if (input.endsWith("sd()")) {
-          // Insert series data inside the "SD()" brackets
-          const updatedInput = input.slice(0, -1) + seriesData.join(", ") + ")";
-          setInput(updatedInput);
-        } else {
-          setInput((prevInput) => prevInput + seriesData.join(", "));
-        }
+        addTextAtCursor(seriesName);
       } catch (error) {
         console.error("Error parsing dropped data:", error);
       }
@@ -273,6 +274,10 @@ const Calculator: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       let key = event.key; // The key pressed
+      // A " press causes this to crash (because of the querySelector below)
+      if (key === '"') {
+        return;
+      }
       const isShiftPressed = event.shiftKey;
       if (isShiftPressed && /^[a-zA-Z]$/.test(key)) {
         key = "shift+"+key.toLowerCase();

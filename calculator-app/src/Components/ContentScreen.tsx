@@ -123,7 +123,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
         for (let x of xValues) { // Iterate over values, not indexes
           const temp_function = graphFunction.replace(/(?<![a-zA-Z])x(?![a-zA-Z])/g, x.toString());
           let expression_tree = parse(temp_function);
-          yValues.push(evaluate_custom(expression_tree, new CalculatorContext(units, lastAnswer))); // Assign x as the key
+          yValues.push(evaluate_custom(expression_tree, new CalculatorContext(units, lastAnswer, seriesList))); // Assign x as the key
         }
         for(let i = 0; i < yValues.length; i++)
           console.log(xValues[i], ":", yValues[i]);
@@ -146,7 +146,7 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
     } else {
       setLineGraphData(null);
     }
-  }, [graphFunction, showGraph]);
+  }, [graphFunction, showGraph, units, history, seriesList]);
 
   const histogramData = getHistogramData();
 
@@ -271,8 +271,9 @@ const ContentScreen: React.FC<ContentScreenProps> = ({
               onClick={() => onSelectSeries(index)}
               draggable
               onDragStart={(e) => {
-                const seriesData = series.data.map((item) => parseFloat(Object.values(item)[0]) || 0);
-                e.dataTransfer.setData("text/plain", JSON.stringify(seriesData));
+                // const seriesData = series.data.map((item) => parseFloat(Object.values(item)[0]) || 0);
+                // e.dataTransfer.setData("text/plain", JSON.stringify(seriesData));
+                e.dataTransfer.setData("text/plain", series.name);
                 onDragSeries(series.name);
               }}
             >
