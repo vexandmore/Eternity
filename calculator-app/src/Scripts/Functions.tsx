@@ -42,7 +42,7 @@ function lnApprox(b: number): number {
         let result = term;
         let n = 2;
 
-        while (n < 20) {
+        while (n < 50) {
             term *= -x;
             result += term / n;
             n++;
@@ -60,7 +60,7 @@ export function eApprox(x: number): number {
     let term = 1.0;
     let i = 1;
 
-    while (i < 30) {
+    while (i < 50) {
         term *= x / i;
         result += term;
         i++;
@@ -93,7 +93,7 @@ function calcExp(b: number, x: number): number {
 
 let A_terms: number[] = [1.5707963050, -0.2145988016, 0.0889789874, -0.0501743046,
     0.0308918810, -0.0170881256, 0.0066700901, -0.0012624911];
-export function arcCos(x: number): number {
+export function arcCos(x: number, units: Units): number {
     let negative: boolean = x < 0.0;
     x = Math.abs(x);
     let result: number = 0.0;
@@ -107,9 +107,9 @@ export function arcCos(x: number): number {
     if (negative) {
         // If negative input, need to use the result
         // we got from the positive value and convert
-        return Math.PI - result;
+        return convert_out_of_rad(Math.PI - result, units);
     } else {
-        return result;
+        return convert_out_of_rad(result, units);
     }
 }
 
@@ -165,11 +165,17 @@ function convert_to_rad(x: number, units: Units): number {
     }
 }
 
+function convert_out_of_rad(x: number, units: Units): number {
+    if (units === Units.RAD) {
+        return x;
+    } else {
+        return x * (180 / PI);
+    }
+}
+
 export function sin(x: number, units: Units, terms: number = 25) : number {
     x = convert_to_rad(x, units);
-    console.log("before reducing " + x);
     x = reduce_to_2pi(x);
-    console.log("After reducing " + x);
     let result: number = 0;
 
     for (let i = 0; i < terms; i++) {
@@ -205,7 +211,7 @@ export function SD(values: number[]): number {
     let n = values.length;
     let sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0); 
     let mean = sum / n;
-    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / n-1;
+    let variance = values.reduce((accumulator, currentValue) => accumulator + Math.pow(currentValue - mean, 2), 0) / (n-1);
     let sd = Math.sqrt(variance);
     return sd;
 }

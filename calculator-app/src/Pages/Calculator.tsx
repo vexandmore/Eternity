@@ -16,7 +16,7 @@ ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend
 
 
 
-interface DataSeries {
+export interface DataSeries {
   name: string;
   data: any[];
 }
@@ -66,7 +66,7 @@ const Calculator: React.FC = () => {
         } else {
           lastAnswer = parseFloat(history[history.length - 1].result);
         }
-        let context = new CalculatorContext(units, lastAnswer);
+        let context = new CalculatorContext(units, lastAnswer, seriesList);
         // Use mathjs to parse into tree
         let expression_tree = parse(input);
         let evaluatedResult = evaluate_custom(expression_tree, context);
@@ -103,11 +103,6 @@ const Calculator: React.FC = () => {
       placeCursorAt(delIndex);
       // Make it so that after deleting, can continue editing (even if just pressed =)
       setJustPressedEquals(false);
-    } else if (value === "sd()") {
-      let newInput = input + "sd()"; // Add "SD()" with empty parentheses
-      setInput(newInput);
-      // Place cursor in the middle
-      placeCursorAt(newInput.length - 1);
     } else if (value === "AC") {
         setInput("");
         setResult("");
@@ -121,16 +116,33 @@ const Calculator: React.FC = () => {
         setInput(value);
         setJustPressedEquals(false);
         new_input = value;
-        placeCursorAt(value.length);
+        // For SD(), logb(), etc place cursor in middle of brackets
+        if (value.endsWith("()")) {
+          placeCursorAt(value.length - 1);
+        } else {
+          placeCursorAt(value.length);
+        }
+        setInput(new_input);
       } else {
-        let addIndex = inputRef?.current?.selectionStart ?? input.length;
-        new_input = input.slice(0, addIndex) + value + input.slice(addIndex);
-        addIndex = addIndex + value.length;
-        placeCursorAt(addIndex);
+        new_input = addTextAtCursor(value);
       }
       setParseError(makeErrorMessage(new_input));
-      setInput(new_input);    
     }
+  };
+
+  // 
+  const addTextAtCursor = (text: string): string => {
+    let addIndex = inputRef?.current?.selectionStart ?? input.length;
+    let new_input = input.slice(0, addIndex) + text + input.slice(addIndex);
+    addIndex = addIndex + text.length;
+        
+    if (text.endsWith("()")) {
+      placeCursorAt(addIndex - 1);
+    } else {
+      placeCursorAt(addIndex);
+    }
+    setInput(new_input);
+    return new_input;
   };
 
   const placeCursorAt = (index: number) => {
@@ -198,7 +210,8 @@ const Calculator: React.FC = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension from the name
+      const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/ /g, "").replace(/\(|\)|-|\+/g, "_"); // Remove file extension from the name, remove parentheses, replace spaces and dashes with underscores
+
       const reader = new FileReader();
   
       reader.onload = (e) => {
@@ -237,17 +250,10 @@ const Calculator: React.FC = () => {
  
   const handleDropOnInput = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const seriesDataString = event.dataTransfer.getData("text/plain");
-    if (seriesDataString) {
+    const seriesName = event.dataTransfer.getData("text/plain");
+    if (seriesName) {
       try {
-        const seriesData = JSON.parse(seriesDataString);
-        if (input.endsWith("sd()")) {
-          // Insert series data inside the "SD()" brackets
-          const updatedInput = input.slice(0, -1) + seriesData.join(", ") + ")";
-          setInput(updatedInput);
-        } else {
-          setInput((prevInput) => prevInput + seriesData.join(", "));
-        }
+        addTextAtCursor(seriesName);
       } catch (error) {
         console.error("Error parsing dropped data:", error);
       }
@@ -268,6 +274,10 @@ const Calculator: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       let key = event.key; // The key pressed
+      // A " press causes this to crash (because of the querySelector below)
+      if (key === '"') {
+        return;
+      }
       const isShiftPressed = event.shiftKey;
       if (isShiftPressed && /^[a-zA-Z]$/.test(key)) {
         key = "shift+"+key.toLowerCase();
@@ -323,15 +333,15 @@ const Calculator: React.FC = () => {
         {/* Second Row */}
         <Button label="a²" dataKey="shift+p" className="operator-button" onClick={() => handleButtonClick("^2")} />
         <Button label="x!" dataKey="!" className="operator-button" onClick={() => handleButtonClick("!")} />
-        <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("abs(")} />
+        <Button label="|a|" dataKey="|" className="operator-button" onClick={() => handleButtonClick("abs()")} />
         <Button label="←"  className="operator-button" onClick={moveLeft} />
         <Button label="→"  className="operator-button" onClick={moveRight} />
         <Button label="DEL" dataKey="Backspace" className="operator-button" onClick={() => handleButtonClick("DEL")} />
         <Button label="ANS" dataKey="a" className="operator-button" onClick={() => handleButtonClick("ANS")} />
 
         {/* Third Row */}
-        <Button label="√" dataKey="r" className="operator-button" onClick={() => handleButtonClick("sqrt(")} />
-        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("root(")} />
+        <Button label="√" dataKey="r" className="operator-button" onClick={() => handleButtonClick("sqrt()")} />
+        <Button label="ⁿ√" dataKey="shift+r" className="operator-button" onClick={() => handleButtonClick("root()")} />
         <Button label="π" dataKey="p" className="operator-button" onClick={() => handleButtonClick("pi")} />
         <Button label="(" dataKey="(" className="operator-button" onClick={() => handleButtonClick("(")} />
         <Button label=")" dataKey=")" className="operator-button" onClick={() => handleButtonClick(")")} />
@@ -339,9 +349,9 @@ const Calculator: React.FC = () => {
         <Button label="÷" dataKey="÷" className="operator-button" onClick={() => handleButtonClick("/")} />
 
         {/* Fourth Row */}
-        <Button label="sin" dataKey="s" className="operator-button" onClick={() => handleButtonClick("sin(")} />
-        <Button label="cos" dataKey="c" className="operator-button" onClick={() => handleButtonClick("cos(")} />
-        <Button label="tan" dataKey="t" className="operator-button" onClick={() => handleButtonClick("tan(")} />
+        <Button label="sin" dataKey="s" className="operator-button" onClick={() => handleButtonClick("sin()")} />
+        <Button label="cos" dataKey="c" className="operator-button" onClick={() => handleButtonClick("cos()")} />
+        <Button label="tan" dataKey="t" className="operator-button" onClick={() => handleButtonClick("tan()")} />
         <Button label="7" dataKey="7" className="number-button" onClick={() => handleButtonClick("7")} />
         <Button label="8" dataKey="8" className="number-button" onClick={() => handleButtonClick("8")} />
         <Button label="9" dataKey="9" className="number-button" onClick={() => handleButtonClick("9")} />
@@ -349,25 +359,25 @@ const Calculator: React.FC = () => {
 
         {/* Fifth Row */}
         <Button label="%" dataKey="%" className="operator-button" onClick={() => handleButtonClick("%")} />
-        <Button label="ln" dataKey="shift+l" className="operator-button" onClick={() => handleButtonClick("ln(")} />
-        <Button label="e^x" dataKey="e" className="operator-button" onClick={() => handleButtonClick("e^(")} />
+        <Button label="ln" dataKey="shift+l" className="operator-button" onClick={() => handleButtonClick("ln()")} />
+        <Button label="e^x" dataKey="e" className="operator-button" onClick={() => handleButtonClick("e^()")} />
         <Button label="4" dataKey="4" className="number-button" onClick={() => handleButtonClick("4")} />
         <Button label="5" dataKey="5" className="number-button" onClick={() => handleButtonClick("5")} />
         <Button label="6" dataKey="6" className="number-button" onClick={() => handleButtonClick("6")} />
         <Button label="-" dataKey="-" className="operator-button" onClick={() => handleButtonClick("-")} />
 
         {/* Sixth Row */}
-        <Button label="arccos(x)" dataKey="shift+c"  className="transcendental-button long-text"  onClick={() => handleButtonClick("arccos(")} />
-        <Button label="x^y" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("^(")} />
-        <Button label="logb(x)" dataKey="l"  className="transcendental-button long-text" onClick={() => handleButtonClick("logb(")} />
+        <Button label="arccos(x)" dataKey="shift+c"  className="transcendental-button long-text"  onClick={() => handleButtonClick("arccos()")} />
+        <Button label="x^y" dataKey="^" className="transcendental-button" onClick={() => handleButtonClick("^()")} />
+        <Button label="logb(x)" dataKey="l"  className="transcendental-button long-text" onClick={() => handleButtonClick("logb()")} />
         <Button label="1" dataKey="1" className="number-button" onClick={() => handleButtonClick("1")} />
         <Button label="2" dataKey="2" className="number-button" onClick={() => handleButtonClick("2")} />
         <Button label="3" dataKey="3" className="number-button" onClick={() => handleButtonClick("3")} />
         <Button label="+" dataKey="+" className="operator-button" onClick={() => handleButtonClick("+")} />
 
         {/* Seventh Row */}
-        <Button label="mad"  dataKey="m" className="transcendental-button" onClick={() => handleButtonClick("mad(")} />
-        <Button label="sinh(x)" dataKey="shift+s"  className="transcendental-button long-text" onClick={() => handleButtonClick("sinh(")} />
+        <Button label="mad"  dataKey="m" className="transcendental-button" onClick={() => handleButtonClick("mad()")} />
+        <Button label="sinh(x)" dataKey="shift+s"  className="transcendental-button long-text" onClick={() => handleButtonClick("sinh()")} />
         <Button label="σ" dataKey="shift+d" className="transcendental-button" onClick={() => handleButtonClick("sd()")} />
         <Button label="0" dataKey="0" className="number-button" onClick={() => handleButtonClick("0")} />
         <Button label="." dataKey="." className="number-button" onClick={() => handleButtonClick(".")} />
