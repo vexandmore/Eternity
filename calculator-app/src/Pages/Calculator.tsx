@@ -210,7 +210,7 @@ const Calculator: React.FC = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/ /g, "").replace(/\(|\)/g, ""); // Remove file extension from the name, remove parentheses, replace spaces with underscores
+      const fileName = file.name.replace(/\.[^/.]+$/, "").replace(/ /g, "").replace(/\(|\)|-|\+/g, "_"); // Remove file extension from the name, remove parentheses, replace spaces and dashes with underscores
 
       const reader = new FileReader();
   
