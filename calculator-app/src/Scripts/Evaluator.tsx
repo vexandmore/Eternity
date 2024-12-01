@@ -40,7 +40,12 @@ export function evaluate_custom(root: MathNode, context: CalculatorContext): num
             case 'multiply':
                 return evaluate_custom(root.args[0], context) * evaluate_custom(root.args[1], context);
             case 'divide':
-                return evaluate_custom(root.args[0], context) / evaluate_custom(root.args[1], context);
+                let numerator = evaluate_custom(root.args[0], context);
+                let denominator = evaluate_custom(root.args[1], context);
+                if (denominator == 0) {
+                    throw Error("Cannot divide by 0");
+                }
+                return numerator/denominator;
             case 'pow':
                 // special case for e^x
                 let arg0 = root.args[0];

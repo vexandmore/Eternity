@@ -124,6 +124,9 @@ export function factorial(n: number): number {
 // Since this is used in arc cosine, implement
 // special case to get more accuracy.
 export function sqrt(n: number, iterations: number = 50): number {
+    if (n < 0.0) {
+        throw Error("Must enter positive number in square root");
+    }
     let guess = 1.0;
     for (let i = 0; i < iterations; i++) {
         guess = 1/2 * (guess + (n / guess));
